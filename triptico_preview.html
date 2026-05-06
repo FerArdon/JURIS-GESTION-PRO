@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JURIS-GESTIÓN-PRO | Tríptico Promocional</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --accent: #0ea5e9;
+            --accent-glow: rgba(14, 165, 233, 0.3);
+            --secondary: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .btn-toggle {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 99px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-toggle.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .btn-toggle:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .triptych-container {
+            width: 100%;
+            max-width: 1200px;
+            perspective: 2000px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .brochure {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            width: 100%;
+            background: var(--glass-border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            padding: 2.5rem;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            transition: transform 0.5s ease;
+        }
+
+        .panel:hover {
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        /* Portada Styling */
+        .panel-portada {
+            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)), url('juris_gestion_pro_hero_1778009456176.png');
+            background-size: cover;
+            background-position: center;
+            justify-content: center;
+            text-align: center;
+            border-right: 1px solid var(--accent);
+        }
+
+        .panel-portada h2 {
+            font-size: 2.2rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .panel-portada .highlight {
+            color: var(--accent);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .panel-portada .slogan {
+            font-style: italic;
+            color: var(--text-muted);
+            margin-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 1.5rem;
+        }
+
+        /* Common Content Styling */
+        h3 {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        li::before {
+            content: "→";
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .contact-info {
+            margin-top: auto;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .contact-info b {
+            color: var(--accent);
+        }
+
+        .badge {
+            background: var(--accent-glow);
+            color: var(--accent);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .face-enter {
+            animation: faceFlip 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes faceFlip {
+            0% { opacity: 0; transform: rotateY(-15deg) scale(0.95); }
+            100% { opacity: 1; transform: rotateY(0) scale(1); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 900px) {
+            .brochure {
+                grid-template-columns: 1fr;
+            }
+            .panel {
+                min-height: auto;
+                border-bottom: 1px solid var(--glass-border);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>JURIS-GESTIÓN-PRO</h1>
+        <p>Visualización del Tríptico Profesional</p>
+    </div>
+
+    <div class="controls">
+        <button class="btn-toggle active" id="btn-externa">Cara Externa</button>
+        <button class="btn-toggle" id="btn-interna">Cara Interna</button>
+    </div>
+
+    <div class="triptych-container">
+        <!-- CARA EXTERNA -->
+        <div id="cara-externa" class="brochure face-enter">
+            <!-- PANEL 3: SOLAPA -->
+            <div class="panel">
+                <span class="badge">Ecosistema Jurídico</span>
+                <h3>🎯 Ideal Para</h3>
+                <ul>
+                    <li><b>Bufetes Privados:</b> CRM jurídico y control de honorarios.</li>
+                    <li><b>Fiscales y Defensores:</b> Gestión de altos volúmenes de expedientes.</li>
+                    <li><b>Notarios:</b> Automatización de protocolo y escritos.</li>
+                </ul>
+                <div style="margin-top: 2rem;">
+                    <h3>🛠️ Especificaciones</h3>
+                    <ul>
+                        <li>Windows 10 y 11</li>
+                        <li>Motor SQL Local Ultra Rápido</li>
+                        <li>Diseño Glassmorphism</li>
+                        <li>Instalación Ligera</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PANEL 2: CONTRAPORTADA -->
+            <div class="panel">
+                <h3>🚀 El Futuro Hoy</h3>
+                <p>Lleve su despacho al siguiente nivel con tecnología de vanguardia diseñada específicamente para el contexto legal moderno.</p>
+                
+                <div class="contact-info">
+                    <span class="section-title">Contacto Principal</span>
+                    <p><b>👤 Dev:</b> Ing. Fernando R. Ardon R.</p>
+                    <p><b>🏢 Marca:</b> JURIS-GESTION-PRO</p>
+                    <p><b>📱 Tel:</b> +504-3352-7444</p>
+                    <p><b>📧 Email:</b> frardonr@hotmail.com</p>
+                </div>
+            </div>
+
+            <!-- PANEL 1: PORTADA -->
+            <div class="panel panel-portada">
+                <span class="highlight">Presentamos</span>
+                <h2>La Revolución en la Gestión Jurídica</h2>
+                <p style="color: #fff; font-weight: 500;">Eleve su práctica profesional al nivel tecnológico definitivo.</p>
+                <div class="slogan">
+                    Justicia, Tecnología y Control en sus manos.
+                </div>
+            </div>
+        </div>
+
+        <!-- CARA INTERNA -->
+        <div id="cara-interna" class="brochure hidden">
+            <!-- PANEL 4: IZQUIERDO -->
+            <div class="panel">
+                <span class="badge">Inteligencia Artificial</span>
+                <h3>🤖 JURIS-AI</h3>
+                <p>Su Asistente Legal Inteligente. No pierda más tiempo en redacciones repetitivas.</p>
+                <ul>
+                    <li>Borradores de demandas en segundos.</li>
+                    <li>Análisis de incidentes por materia.</li>
+                    <li>Autocompletado inteligente de plantillas.</li>
+                </ul>
+            </div>
+
+            <!-- PANEL 5: CENTRAL -->
+            <div class="panel">
+                <span class="badge">Gestión y Control</span>
+                <h3>📊 Dashboard & Protocolo</h3>
+                <span class="section-title">Análisis de Alto Nivel</span>
+                <ul>
+                    <li>Honorarios Proyectados.</li>
+                    <li>Métricas de Rendimiento Real.</li>
+                    <li>Control de Metas Financieras.</li>
+                </ul>
+                <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid var(--glass-border);">
+                <span class="section-title">Protocolo Notarial Digital</span>
+                <ul>
+                    <li>Control milimétrico de folios.</li>
+                    <li>Alertas automáticas de límites.</li>
+                    <li>Exportación rápida de índices.</li>
+                </ul>
+            </div>
+
+            <!-- PANEL 6: DERECHO -->
+            <div class="panel">
+                <span class="badge">Privacidad y Marca</span>
+                <h3>🛡️ Escudo de Datos</h3>
+                <p>Sus datos le pertenecen. Privacidad total sin dependencia de la nube.</p>
+                <ul>
+                    <li>Funcionamiento Offline 100%.</li>
+                    <li>Respaldos Automáticos al cerrar.</li>
+                    <li>Seguridad por PIN Administrativo.</li>
+                </ul>
+                <div style="margin-top: 2rem;">
+                    <h3>🎨 Identidad Flexible</h3>
+                    <ul>
+                        <li>Inserte su Logo Oficial.</li>
+                        <li>Nombre de su firma en informes.</li>
+                        <li>Fichas técnicas personalizadas.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btnExterna = document.getElementById('btn-externa');
+        const btnInterna = document.getElementById('btn-interna');
+        const caraExterna = document.getElementById('cara-externa');
+        const caraInterna = document.getElementById('cara-interna');
+
+        btnExterna.addEventListener('click', () => {
+            btnExterna.classList.add('active');
+            btnInterna.classList.remove('active');
+            caraExterna.classList.remove('hidden');
+            caraInterna.classList.add('hidden');
+            caraExterna.classList.remove('face-enter');
+            void caraExterna.offsetWidth; // Trigger reflow
+            caraExterna.classList.add('face-enter');
+        });
+
+        btnInterna.addEventListener('click', () => {
+            btnInterna.classList.add('active');
+            btnExterna.classList.remove('active');
+            caraInterna.classList.remove('hidden');
+            caraExterna.classList.add('hidden');
+            caraInterna.classList.remove('face-enter');
+            void caraInterna.offsetWidth; // Trigger reflow
+            caraInterna.classList.add('face-enter');
+        });
+    </script>
+</body>
+</html>

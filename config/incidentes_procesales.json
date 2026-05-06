@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "nombre": "Cuestión de Competencia",
+    "materia": "General",
+    "descripcion": "Impugnación de la facultad del juez para conocer el caso por territorio o materia.",
+    "fundamento_legal": "Decreto 211-2007 (CPC) / Decreto 9-99-E (CPP)"
+  },
+  {
+    "id": 2,
+    "nombre": "Recusación o Abstención",
+    "materia": "General",
+    "descripcion": "Solicitud para apartar a un juez o perito por sospecha de parcialidad o interés.",
+    "fundamento_legal": "Artículos correspondientes a la imparcialidad judicial"
+  },
+  {
+    "id": 3,
+    "nombre": "Nulidad de Actuaciones",
+    "materia": "Procesal",
+    "descripcion": "Incidente para invalidar actos procesales que causen indefensión.",
+    "fundamento_legal": "Principios Constitucionales y Códigos Procesales"
+  },
+  {
+    "id": 4,
+    "nombre": "Acumulación de Procesos",
+    "materia": "Civil",
+    "descripcion": "Unión de dos o más expedientes para que se resuelvan en una sola sentencia.",
+    "fundamento_legal": "Decreto 211-2007 (CPC)"
+  },
+  {
+    "id": 5,
+    "nombre": "Excepción de Litispendencia",
+    "materia": "Civil",
+    "descripcion": "Alegato de que existe otro proceso idéntico pendiente de resolución.",
+    "fundamento_legal": "Decreto 211-2007 (CPC)"
+  }
+]

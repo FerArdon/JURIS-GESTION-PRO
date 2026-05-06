@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(awk '/^[ ]*\\\\.modal/{print NR\": \"$0; getline; while\\(/^[ ]/ && !/^[ ]*\\\\.[a-zA-Z]/\\) {print NR\": \"$0; getline}}' juris_gestion_pro_app.html)",
+      "Read(//e/1_A_A_A_JURIS-GESTI�N-PRO/data/**)",
+      "PowerShell(python --version)",
+      "PowerShell(python -m PyInstaller --version)",
+      "PowerShell(python -c \"import webview; print\\('pywebview OK'\\)\")",
+      "PowerShell(python -c \"import docx; print\\('python-docx OK'\\)\")"
+    ]
+  }
+}

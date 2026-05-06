@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: landscape;
+            margin: 0.5in;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            border: none;
+        }
+        td {
+            vertical-align: top;
+            padding: 20px;
+            border: 1px solid #ddd; /* Guía de corte/doblez */
+            height: 7in; /* Aproximado para hoja carta */
+        }
+        .header-box {
+            background-color: #0f172a;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .title {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #0ea5e9;
+        }
+        .subtitle {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .highlight {
+            color: #0ea5e9;
+            font-weight: bold;
+        }
+        .footer {
+            font-size: 9pt;
+            color: #666;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CARA EXTERNA -->
+    <h2 style="text-align: center; color: #666;">CARA EXTERNA (Lado de impresión 1)</h2>
+    <table>
+        <tr>
+            <!-- PANEL 3: SOLAPA INTERNA -->
+            <td>
+                <div class="header-box">🎯 IDEAL PARA</div>
+                <p><b>Bufetes Privados:</b> CRM jurídico y control de honorarios.</p>
+                <p><b>Fiscales y Defensores:</b> Manejo de altos volúmenes de expedientes.</p>
+                <p><b>Notarios:</b> Automatización de libro de protocolo.</p>
+                
+                <div style="margin-top: 30px;">
+                    <div class="header-box">🛠️ ESPECIFICACIONES</div>
+                    <ul>
+                        <li>Windows 10 y 11</li>
+                        <li>Base de Datos SQL Local</li>
+                        <li>Interfaz Glassmorphism</li>
+                        <li>Instalación Rápida</li>
+                    </ul>
+                </div>
+            </td>
+
+            <!-- PANEL 2: CONTRAPORTADA -->
+            <td>
+                <div class="header-box">CONTACTO</div>
+                <p style="text-align: center; font-weight: bold;">¡Lleve su despacho al futuro!</p>
+                <p>Para información y licencias:</p>
+                <p><b>Desarrollador:</b><br>Ing. Fernando Rafael Ardon Rodriguez</p>
+                <p><b>Marca:</b> JURIS-GESTION-PRO</p>
+                <p><b>WhatsApp:</b> +504-3352-7444</p>
+                <p><b>Correo:</b> frardonr@hotmail.com</p>
+            </td>
+
+            <!-- PANEL 1: PORTADA -->
+            <td style="background-color: #f8fafc;">
+                <div style="text-align: center; margin-top: 50px;">
+                    <p class="highlight">PRESENTAMOS</p>
+                    <h1 style="font-size: 24pt;">JURIS-GESTIÓN-PRO</h1>
+                    <p class="subtitle">La Revolución en la Gestión Jurídica y Notarial</p>
+                    <hr style="width: 50%; border: 1px solid #0ea5e9;">
+                    <p>Eleve su práctica profesional al siguiente nivel tecnológico.</p>
+                    <p style="margin-top: 100px; font-style: italic;">Justicia, Tecnología y Control en sus manos.</p>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- CARA INTERNA -->
+    <h2 style="text-align: center; color: #666; margin-top: 50px;">CARA INTERNA (Lado de impresión 2)</h2>
+    <table>
+        <tr>
+            <!-- PANEL 4: INTERIOR IZQUIERDO -->
+            <td>
+                <div class="header-box">🤖 JURIS-AI</div>
+                <p class="highlight">Asistente Legal Inteligente</p>
+                <ul>
+                    <li>Redacción de demandas en segundos.</li>
+                    <li>Análisis de incidentes procesales por materia.</li>
+                    <li>Autocompletado de plantillas con datos reales.</li>
+                </ul>
+                <p><i>Optimice su tiempo y elimine la redacción repetitiva.</i></p>
+            </td>
+
+            <!-- PANEL 5: INTERIOR CENTRAL -->
+            <td>
+                <div class="header-box">📊 GESTIÓN AVANZADA</div>
+                <p><b>Dashboard Analítico:</b></p>
+                <ul>
+                    <li>Honorarios Proyectados.</li>
+                    <li>Métricas de Rendimiento.</li>
+                    <li>Metas Mensuales.</li>
+                </ul>
+                <div class="header-box" style="margin-top: 20px;">📜 PROTOCOLO</div>
+                <ul>
+                    <li>Control milimétrico de folios.</li>
+                    <li>Alertas de límites de folios.</li>
+                    <li>Índices de Protocolo rápidos.</li>
+                </ul>
+            </td>
+
+            <!-- PANEL 6: INTERIOR DERECHO -->
+            <td>
+                <div class="header-box">🛡️ ESCUDO DE DATOS</div>
+                <p><b>Privacidad Total:</b> Sus datos le pertenecen solo a usted.</p>
+                <ul>
+                    <li>Funcionamiento Offline.</li>
+                    <li>Respaldos Automáticos.</li>
+                    <li>Seguridad por PIN.</li>
+                </ul>
+                
+                <div style="margin-top: 30px;">
+                    <div class="header-box">🎨 PERSONALIZACIÓN</div>
+                    <p>Inserte su Logo y el Nombre de su Bufete para informes oficiales.</p>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

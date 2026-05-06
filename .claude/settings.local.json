@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import webview; print\\('pywebview OK'\\)\")",
+      "Bash(python -c \"from src.database import inicializar_db; print\\('database OK'\\)\")",
+      "Bash(python -c \"from src.seguridad import ejecutar_escudo_datos; print\\('seguridad OK'\\)\")",
+      "Bash(python -c \"from src.licencia import verificar_licencia; print\\('licencia OK'\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(python -c \"import docx; print\\('python-docx OK:', docx.__version__\\)\")",
+      "Bash(python -c \"import webview; print\\(webview.__version__\\); print\\(dir\\(webview\\)\\)\")",
+      "Bash(python _generar_promo.py)",
+      "Bash(pip show *)",
+      "Bash(python -c \"import webview.platforms; import os; print\\(os.listdir\\(os.path.dirname\\(webview.platforms.__file__\\)\\)\\)\")",
+      "Bash(python -m PyInstaller juris_gestion_pro.spec --clean)"
+    ]
+  }
+}

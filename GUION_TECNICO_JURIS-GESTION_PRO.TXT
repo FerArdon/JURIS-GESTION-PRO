@@ -1,0 +1,16 @@
+GUION TÉCNICO: JURIS-GESTIÓN-PRO (Duración Máx: 3:00 min)
+[0:00 - 0:20] INTRODUCCIÓN Y DASHBOARD (Pantalla: Vista del Dashboard Analítico) "Bienvenidos. Este es JURIS-GESTIÓN-PRO, su centro de control operativo y legal. El Dashboard proporciona métricas en tiempo real sobre la carga de trabajo del despacho y alertas preventivas, como el límite de folios notariales, garantizando control absoluto."
+
+[0:20 - 0:50] CLIENTES Y EXPEDIENTES (Pantalla: Navegación a Clientes, luego a Expedientes. Abrir modal de Nuevo Expediente) "El sistema centraliza la información. En 'Clientes' administramos el directorio base. En 'Expedientes', vinculamos esos clientes a los casos activos. Para modificar cualquier registro, el sistema exige un PIN de seguridad, garantizando la integridad de los datos. Al hacer clic en un expediente, gestionamos su ciclo de vida: Activo, En Proceso o Cerrado."
+
+[0:50 - 1:20] AUDIENCIAS Y FICHAS TÉCNICAS (Pantalla: Vista Gestión de Audiencias. Clic en un registro y luego en Imprimir/PDF) "El módulo de Audiencias permite programar y dar seguimiento a las etapas procesales. Una ventaja clave es la generación automática de la 'Ficha Técnica de Audiencia'. Al hacer clic en imprimir, el sistema compila los datos, extrae anotaciones de la inteligencia artificial y genera un documento PDF oficial listo para su impresión o archivo."
+
+[0:20 - 1:50] PROTOCOLO NOTARIAL (Pantalla: Vista de Protocolo Notarial. Clic en Exportar Índice) "Para los notarios, el Libro de Protocolo mantiene un conteo estricto de instrumentos y folios utilizados. Previene desbordamientos legales y permite exportar el índice notarial de forma consolidada con un solo clic."
+
+[1:50 - 2:30] ASISTENTE JURIS-AI Y REDACCIÓN (Pantalla: Panel lateral derecho JURIS-AI. Escribir un comando como "redacta demanda" y mostrar el autocompletado) "El panel derecho aloja a JURIS-AI, nuestro asistente integrado. Consulta instantáneamente incidentes procesales sin salir del sistema o utiliza motores de autocompletado. Al seleccionar 'Redactar Documento', el editor Markdown permite crear borradores legales inyectando automáticamente los datos de su cliente, listos para copiar y usar."
+
+[2:30 - 3:00] SEGURIDAD Y CONFIGURACIÓN (Pantalla: Vista de Configuración. Mostrar cambio de tema visual y botón de Backup) "Finalmente, la Configuración. Personalice la estética mediante el motor visual nativo en modo claro u oscuro, establezca su PIN de administrador e ingrese el logo del despacho. Sus datos están protegidos por el 'Escudo de Datos', que genera un respaldo local comprimido automáticamente al cerrar el programa, o de manera manual desde este panel."
+
+(Cierre: Pantalla negra con Logo del Despacho) "Eficiencia operativa y seguridad de la información. Esto es JURIS-GESTIÓN-PRO."
+
+Instrucción de Grabación: Graba tu pantalla utilizando herramientas como OBS Studio o Windows Snipping Tool (modo video) ejecutando las acciones exactas descritas en los corchetes *(Pantalla...)*. Cuando tengas el archivo de video final, colócalo en la carpeta del proyecto y yo me encargaré de enlazar el reproductor HTML del sistema directamente a ese archivo.

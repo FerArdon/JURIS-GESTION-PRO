@@ -1,0 +1,11 @@
+AVISO DE OPTIMIZACIÓN - JURIS-GESTIÓN-PRO
+------------------------------------------
+
+Para evitar que la aplicación se congele al iniciar debido a problemas de conexión con CDNs externas, 
+se recomienda encarecidamente descargar las siguientes librerías y guardarlas en esta carpeta:
+
+1. chart.js             -> Descargar desde: https://cdn.jsdelivr.net/npm/chart.js
+2. html2pdf.bundle.min.js -> Descargar desde: https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js
+
+El archivo 'juris_gestion_pro_app.html' ya ha sido configurado para buscar estas librerías localmente.
+Si los archivos no están presentes, la aplicación mostrará un error en la consola (Ctrl+Shift+I) pero continuará funcionando.

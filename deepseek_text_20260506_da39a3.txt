@@ -1,0 +1,55 @@
+Mi aplicación se llama JURIS-GESTION-PRO, un sistema de gestión jurídica construido con PyWebView (Python + HTML/JavaScript). Al lanzar la app, la interfaz se congela por completo y no responde a ningún clic. He identificado varias causas posibles que te detallo a continuación. Necesito que me des un diagnóstico preciso y soluciones concretas con fragmentos de código, además de un plan paso a paso para depurar el problema hoy mismo.
+
+### 1. Scripts externos bloqueantes (causa más probable)
+El HTML carga estas librerías dentro del `<head>` sin `async` ni `defer`:
+```html
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+Si la CDN está lenta o no hay Internet, el navegador bloquea el parseo del DOM y la UI queda congelada.
+
+¿Cómo descargo estas librerías y las sirvo localmente?
+
+¿Cómo debo modificar las etiquetas <script> para que no bloqueen la carga inicial sin romper su uso en dashboard y exportación de PDF?
+
+2. Backend Python bloqueando el hilo principal
+En el evento pywebviewready hago varias llamadas al backend:
+
+javascript
+window.pywebview.api.get_clientes().then(...);
+window.pywebview.api.get_audiencias().then(...);
+window.pywebview.api.get_casos("Activo").then(...);
+window.pywebview.api.get_configuracion().then(...);
+Si alguna de esas funciones Python realiza una operación síncrona larga (lectura de archivos, bloqueo de base de datos, bucle pesado), PyWebView congelará la GUI porque todo se ejecuta en el hilo principal.
+
+¿Cómo puedo detectar cuál de estas funciones está bloqueando?
+
+¿Qué cambios debo hacer en el código Python para mover bloqueos a hilos secundarios o usar asyncio en PyWebView?
+
+Dame ejemplos de cómo adaptar las funciones para que no congelen la UI.
+
+3. Posibles errores silenciosos en JavaScript
+Tengo un flag global _cambiandoEstado que se pone true antes de una llamada al backend y se limpia en el then. Si el backend falla sin lanzar excepción, ¿podría quedarse bloqueado y afectar el arranque?
+
+Algunos modales tienen id duplicado (por ejemplo, conf-color-fondo aparece dos veces). ¿Puede esto causar congelamiento o solo mal funcionamiento?
+
+¿Hay alguna otra práctica de riesgo (uso de innerHTML masivo, recursión, etc.) que pudiera congelar la app al iniciar?
+
+4. Modales invisibles bloqueando la interacción
+Todos los modales empiezan con display: none, pero algunos tienen z-index: 2000 y fondo opaco. Si por error uno quedara abierto (incluso invisible), bloquearía los clics en el resto de la interfaz.
+
+¿Cómo puedo verificar que ningún modal esté abierto al iniciar?
+
+¿Qué debo agregar para prevenir que esto ocurra?
+
+5. Plan de diagnóstico inmediato
+Dame una serie de pasos prácticos que pueda ejecutar hoy:
+
+Dónde agregar console.log en el evento pywebviewready y alrededor de cada llamada API para ver cuál se traba.
+
+Cómo habilitar la consola de desarrollo en PyWebView (debug=True, web inspector, etc.).
+
+Cómo probar la app sin conexión a Internet para descartar la carga de CDN.
+
+Alguna herramienta o método para monitorizar el hilo de Python desde la misma app.
+
+Por favor, devuélveme las soluciones con fragmentos de código específicos para JURIS-GESTION-PRO y las mejores prácticas para evitar congelamientos en el futuro.
