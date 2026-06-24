@@ -47,3 +47,7 @@ installer/*.exe
 # OS
 .DS_Store
 Thumbs.db
+
+# Generador de Licencias — Build artifacts (privado del proveedor)
+dist_keygen/
+build_keygen/
