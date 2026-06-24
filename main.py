@@ -5,6 +5,9 @@ import base64
 import shutil
 import sqlite3
 import logging
+import hashlib
+import datetime
+import uuid
 import webview
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -75,6 +78,76 @@ def log_performance(func):
         return result
     return wrapper
 
+
+# ══════════════════════════════════════════════════════════════
+# HELPERS DE LICENCIAS (nivel módulo)
+# ══════════════════════════════════════════════════════════════
+_LICENSE_SECRET = "JURIS_PRO_FER_ARDON_2026"
+_BASE_DATE = datetime.date(2024, 1, 1)
+
+def _get_hardware_id():
+    """
+    Genera un identificador único de hardware de 10 caracteres
+    basado en la dirección MAC de la interfaz de red principal.
+    """
+    try:
+        mac_int = uuid.getnode()
+        # Convertir el entero MAC a hex de 12 dígitos, luego tomar 10
+        mac_hex = f"{mac_int:012X}"
+        return mac_hex[:10]
+    except Exception:
+        return "UNIVERSAL"
+
+
+def _validar_key_interna(key, hw_id):
+    """
+    Valida una clave de licencia contra el Hardware ID del equipo.
+    La clave puede venir con o sin guiones (formato XXXXX-XXXXX-XXXXX-XXXXX).
+    Retorna dict con: valida (bool), mensaje (str).
+    """
+    try:
+        # Limpiar y normalizar
+        key_limpia = key.strip().upper().replace('-', '')
+        if len(key_limpia) != 20:
+            return {'valida': False, 'mensaje': 'La clave debe tener 20 caracteres.'}
+
+        # Extraer componentes
+        exp_hex   = key_limpia[:4]
+        signature = key_limpia[4:20]
+
+        # Re-calcular la firma esperada con el HW ID local
+        hw_id_norm = hw_id.strip().upper()
+        firma_esperada = hashlib.sha256(
+            f"{exp_hex}{hw_id_norm}{_LICENSE_SECRET}".encode()
+        ).hexdigest()[:16].upper()
+
+        # También aceptar clave UNIVERSAL (hw_id = "UNIVERSAL")
+        firma_universal = hashlib.sha256(
+            f"{exp_hex}UNIVERSAL{_LICENSE_SECRET}".encode()
+        ).hexdigest()[:16].upper()
+
+        if signature != firma_esperada and signature != firma_universal:
+            return {'valida': False, 'mensaje': 'Clave inválida. Verifique la clave o el Hardware ID.'}
+
+        # Verificar expiración
+        if exp_hex == 'FFFF':
+            return {'valida': True, 'mensaje': 'Licencia PERMANENTE activa. ✅'}
+
+        dias_totales = int(exp_hex, 16)
+        fecha_exp = _BASE_DATE + datetime.timedelta(days=dias_totales)
+        hoy = datetime.date.today()
+
+        if hoy > fecha_exp:
+            return {'valida': False, 'mensaje': f'Licencia vencida el {fecha_exp.strftime("%d/%m/%Y")}. Contacte al proveedor para renovar.'}
+
+        dias_restantes = (fecha_exp - hoy).days
+        return {'valida': True, 'mensaje': f'Licencia activa. Vence el {fecha_exp.strftime("%d/%m/%Y")} ({dias_restantes} días restantes). ✅'}
+
+    except Exception as e:
+        logging.error(f"Error al validar licencia: {e}")
+        return {'valida': False, 'mensaje': f'Error interno al validar la clave: {e}'}
+
+
 class JurisAPI:
     """Clase puente entre Python (Backend) y HTML/JS (Frontend)"""
     def __init__(self):
@@ -90,6 +163,7 @@ class JurisAPI:
             "ALTER TABLE configuracion ADD COLUMN incidentes_path TEXT DEFAULT ''",
             "ALTER TABLE actuaciones ADD COLUMN monto_involucrado REAL DEFAULT 0",
             "ALTER TABLE clientes ADD COLUMN correo TEXT",
+            "ALTER TABLE configuracion ADD COLUMN licencia_key TEXT DEFAULT ''",
         ]
         try:
             conn = _get_db_connection()
@@ -112,6 +186,54 @@ class JurisAPI:
             return ruta if ruta else CONFIG_PATH
         except Exception:
             return CONFIG_PATH
+
+    # ══════════════════════════════════════════════════════════════
+    # SISTEMA DE LICENCIAS
+    # ══════════════════════════════════════════════════════════════
+
+    def get_estado_licencia(self):
+        """
+        Verifica si la aplicación tiene una licencia válida.
+        Retorna un dict con: activado (bool), hw_id (str), info (str).
+        """
+        hw_id = _get_hardware_id()
+        try:
+            conn = _get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute('SELECT licencia_key FROM configuracion WHERE id = 1')
+            row = cursor.fetchone()
+            conn.close()
+            key_guardada = row['licencia_key'] if row and row['licencia_key'] else ''
+        except Exception:
+            key_guardada = ''
+
+        if not key_guardada:
+            return {'activado': False, 'hw_id': hw_id, 'info': 'Sin licencia registrada.'}
+
+        resultado = _validar_key_interna(key_guardada, hw_id)
+        return {'activado': resultado['valida'], 'hw_id': hw_id, 'info': resultado['mensaje']}
+
+    def validar_licencia_key(self, key):
+        """
+        Recibe una clave de 20 caracteres (con o sin guiones),
+        la valida contra el Hardware ID del equipo y la guarda si es correcta.
+        Retorna dict con: valida (bool), mensaje (str).
+        """
+        hw_id = _get_hardware_id()
+        resultado = _validar_key_interna(key, hw_id)
+        if resultado['valida']:
+            try:
+                conn = _get_db_connection()
+                key_limpia = key.strip().upper().replace('-', '')
+                key_fmt = f"{key_limpia[:5]}-{key_limpia[5:10]}-{key_limpia[10:15]}-{key_limpia[15:20]}"
+                conn.execute("UPDATE configuracion SET licencia_key = ? WHERE id = 1", (key_fmt,))
+                conn.commit()
+                conn.close()
+                logging.info("Licencia válida registrada exitosamente.")
+            except Exception as e:
+                logging.error(f"Error al guardar licencia: {e}")
+                return {'valida': False, 'mensaje': f'Error al guardar la licencia: {e}'}
+        return resultado
 
     @log_performance
     def get_incidentes(self):
