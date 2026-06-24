@@ -34,7 +34,8 @@ ENV/
 data/*.db
 data/*.db-journal
 backups/*.jgpbackup
-installer/*.exe
+installer/**/*.exe
+installer/Output/
 *.spec
 *.iss
 *.bat
