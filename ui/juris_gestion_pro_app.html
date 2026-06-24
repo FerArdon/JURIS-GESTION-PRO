@@ -1837,7 +1837,55 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                         <button class="btn-send" style="background:#0067c0; color:white; width:100%; padding:10px; font-weight:bold;" onclick="generarBackupManual()">🛡️ Generar Respaldo Manual Ahora</button>
                     </div>
 
+                    <h3 style="color:var(--text-main); margin-bottom: 20px; margin-top:30px; border-top:1px solid var(--border-color); padding-top:20px;">🔑 Licencia de Software</h3>
+                    <div id="lic-status-card" style="margin-bottom: 25px; background:var(--bg-dark); border:1px solid var(--border-color); padding:18px 20px; border-radius:6px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+                            <div>
+                                <div style="font-size:0.78rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:4px;">Estado de Activación</div>
+                                <div id="lic-status-texto" style="font-size:0.95rem; font-weight:600; color:var(--text-main);">Verificando...</div>
+                            </div>
+                            <button class="btn-send" style="background:#38465b; white-space:nowrap;" onclick="abrirModalRenovarLicencia()">🔄 Renovar / Cambiar Licencia</button>
+                        </div>
+                    </div>
+
                     <button class="btn-send" onclick="guardarConfiguracion()" style="width:100%; font-size:1.1rem; padding:12px; margin-top:10px;">💾 Guardar Configuración</button>
+                </div>
+            </div>
+
+            <!-- MODAL: RENOVAR / CAMBIAR LICENCIA -->
+            <div class="modal-overlay" id="modal-renovar-licencia">
+                <div class="modal-content" style="width:480px; max-width:95vw;">
+                    <h3 style="margin-bottom:6px; color:var(--text-primary); font-size:1.1rem;">🔑 Renovar / Cambiar Licencia</h3>
+                    <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">
+                        Ingrese la nueva clave de licencia que le proporcionó el proveedor.<br>
+                        La licencia actual se mantendrá si la nueva clave es inválida.
+                    </p>
+
+                    <div style="background:rgba(0,103,192,0.08); border:1px solid rgba(0,103,192,0.25); border-radius:6px; padding:12px 16px; margin-bottom:18px;">
+                        <div style="font-size:0.72rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.7px; margin-bottom:4px;">Hardware ID de este equipo</div>
+                        <div id="ren-hw-display" style="font-family:monospace; font-weight:700; color:var(--accent); letter-spacing:2px; font-size:1rem;">Cargando...</div>
+                    </div>
+
+                    <label style="display:block; color:var(--text-secondary); font-size:0.82rem; margin-bottom:6px;">Nueva Clave de Licencia (XXXXX-XXXXX-XXXXX-XXXXX)</label>
+                    <input
+                        type="text"
+                        id="ren-key-input"
+                        class="ai-input"
+                        style="width:100%; font-family:monospace; letter-spacing:2px; text-align:center; font-size:1rem; text-transform:uppercase;"
+                        placeholder="00000-00000-00000-00000"
+                        maxlength="24"
+                        autocomplete="off"
+                        spellcheck="false"
+                        oninput="_formatRenKey(this)"
+                        onkeydown="if(event.key==='Enter') renovarLicencia()"
+                    >
+
+                    <div id="ren-msg" style="min-height:22px; margin-top:12px; font-size:0.85rem;"></div>
+
+                    <div style="display:flex; gap:10px; margin-top:20px; justify-content:flex-end;">
+                        <button class="btn-send" style="background:var(--btn-secondary); color:var(--text-primary);" onclick="cerrarModalRenovarLicencia()">Cancelar</button>
+                        <button class="btn-send" id="ren-btn-activar" onclick="renovarLicencia()">✅ Activar Nueva Clave</button>
+                    </div>
                 </div>
             </div>
 
@@ -3725,6 +3773,23 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                 if(conf.incidentes_path) {
                     document.getElementById('conf-incidentes-path').value = conf.incidentes_path;
                 }
+
+                // ── Mostrar estado de licencia en la card ──
+                if (window.pywebview) {
+                    pywebview.api.get_estado_licencia().then(est => {
+                        const el = document.getElementById('lic-status-texto');
+                        if (!el) return;
+                        if (est && est.activado) {
+                            el.textContent = est.info;
+                            el.style.color = 'var(--status-success)';
+                        } else {
+                            el.textContent = est ? est.info : 'Sin licencia.';
+                            el.style.color = 'var(--status-error)';
+                        }
+                        // Guardar HW ID globalmente por si abre el modal
+                        if (est) window._jgp_hw_id = est.hw_id;
+                    }).catch(() => {});
+                }
             }
         }
         
@@ -3792,6 +3857,90 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     alert('❌ Error al guardar: ' + res);
                 }
             }).catch(err => alert("Error de red: " + err));
+        }
+
+        /* ── GESTIÓN DE LICENCIA DESDE CONFIGURACIÓN ── */
+
+        function abrirModalRenovarLicencia() {
+            const modal = document.getElementById('modal-renovar-licencia');
+            const hwEl  = document.getElementById('ren-hw-display');
+            const inp   = document.getElementById('ren-key-input');
+            const msg   = document.getElementById('ren-msg');
+            const btn   = document.getElementById('ren-btn-activar');
+
+            if (inp) inp.value = '';
+            if (msg) { msg.textContent = ''; msg.style.color = ''; }
+            if (btn) btn.disabled = false;
+
+            const hwId = window._jgp_hw_id || 'No disponible';
+            if (hwEl) hwEl.textContent = hwId;
+
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.add('modal-visible');
+                setTimeout(() => { if (inp) inp.focus(); }, 80);
+            }
+        }
+
+        function cerrarModalRenovarLicencia() {
+            const modal = document.getElementById('modal-renovar-licencia');
+            if (modal) {
+                modal.classList.remove('modal-visible');
+                modal.style.display = 'none';
+            }
+        }
+
+        function _formatRenKey(input) {
+            let val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            let fmt = '';
+            for (let i = 0; i < val.length && i < 20; i++) {
+                if (i > 0 && i % 5 === 0) fmt += '-';
+                fmt += val[i];
+            }
+            input.value = fmt;
+        }
+
+        async function renovarLicencia() {
+            const inp = document.getElementById('ren-key-input');
+            const msg = document.getElementById('ren-msg');
+            const btn = document.getElementById('ren-btn-activar');
+
+            const key = (inp ? inp.value : '').trim();
+            if (!key || key.replace(/-/g, '').length < 20) {
+                msg.style.color = 'var(--status-error)';
+                msg.textContent = '⚠️ Ingrese una clave de 20 caracteres.';
+                return;
+            }
+
+            btn.disabled = true;
+            msg.style.color = 'var(--text-secondary)';
+            msg.textContent = 'Validando clave...';
+
+            try {
+                const res = await pywebview.api.validar_licencia_key(key);
+                if (res && res.valida) {
+                    msg.style.color = 'var(--status-success)';
+                    msg.textContent = '✅ ' + res.mensaje;
+
+                    // Actualizar la card de estado en configuración
+                    const statusEl = document.getElementById('lic-status-texto');
+                    if (statusEl) {
+                        statusEl.textContent = res.mensaje;
+                        statusEl.style.color = 'var(--status-success)';
+                    }
+
+                    // Cerrar modal automáticamente tras 1.5s
+                    setTimeout(() => cerrarModalRenovarLicencia(), 1500);
+                } else {
+                    msg.style.color = 'var(--status-error)';
+                    msg.textContent = '❌ ' + (res ? res.mensaje : 'Error desconocido.');
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                msg.style.color = 'var(--status-error)';
+                msg.textContent = '❌ Error de comunicación. Reintente.';
+                btn.disabled = false;
+            }
         }
 
         function aplicarModoVisual() {
