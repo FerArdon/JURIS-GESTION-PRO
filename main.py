@@ -164,6 +164,8 @@ class JurisAPI:
             "ALTER TABLE actuaciones ADD COLUMN monto_involucrado REAL DEFAULT 0",
             "ALTER TABLE clientes ADD COLUMN correo TEXT",
             "ALTER TABLE configuracion ADD COLUMN licencia_key TEXT DEFAULT ''",
+            "ALTER TABLE configuracion ADD COLUMN trial_start TEXT DEFAULT ''",
+            "ALTER TABLE configuracion ADD COLUMN last_access TEXT DEFAULT ''",
         ]
         try:
             conn = _get_db_connection()
@@ -193,25 +195,120 @@ class JurisAPI:
 
     def get_estado_licencia(self):
         """
-        Verifica si la aplicación tiene una licencia válida.
-        Retorna un dict con: activado (bool), hw_id (str), info (str).
+        Verifica si la aplicación tiene una licencia válida o está en el período de prueba.
+        Retorna un dict con: activado (bool), hw_id (str), info (str), en_prueba (bool), dias_restantes (int).
         """
         hw_id = _get_hardware_id()
         try:
             conn = _get_db_connection()
             cursor = conn.cursor()
-            cursor.execute('SELECT licencia_key FROM configuracion WHERE id = 1')
+            cursor.execute('SELECT licencia_key, trial_start, last_access FROM configuracion WHERE id = 1')
             row = cursor.fetchone()
             conn.close()
+            
             key_guardada = row['licencia_key'] if row and row['licencia_key'] else ''
-        except Exception:
+            trial_start = row['trial_start'] if row and row['trial_start'] else ''
+            last_access = row['last_access'] if row and row['last_access'] else ''
+        except Exception as e:
+            logging.error(f"Error al obtener estado de licencia de DB: {e}")
             key_guardada = ''
+            trial_start = ''
+            last_access = ''
 
-        if not key_guardada:
-            return {'activado': False, 'hw_id': hw_id, 'info': 'Sin licencia registrada.'}
+        # 1. Si hay una clave registrada, validar esa clave
+        if key_guardada:
+            resultado = _validar_key_interna(key_guardada, hw_id)
+            if resultado['valida']:
+                return {
+                    'activado': True,
+                    'hw_id': hw_id,
+                    'info': resultado['mensaje'],
+                    'en_prueba': False,
+                    'dias_restantes': 9999
+                }
+            # Si hay una clave pero es inválida o expirada
+            return {
+                'activado': False,
+                'hw_id': hw_id,
+                'info': resultado['mensaje'],
+                'en_prueba': False,
+                'dias_restantes': 0
+            }
 
-        resultado = _validar_key_interna(key_guardada, hw_id)
-        return {'activado': resultado['valida'], 'hw_id': hw_id, 'info': resultado['mensaje']}
+        # 2. Si no hay clave, manejar el período de prueba (Trial) de 15 días
+        hoy = datetime.date.today()
+        
+        # Inicializar el período de prueba si es el primer arranque
+        if not trial_start:
+            trial_start = hoy.isoformat()
+            last_access = hoy.isoformat()
+            try:
+                conn = _get_db_connection()
+                conn.execute(
+                    "UPDATE configuracion SET trial_start = ?, last_access = ? WHERE id = 1",
+                    (trial_start, last_access)
+                )
+                conn.commit()
+                conn.close()
+                logging.info(f"Período de prueba iniciado hoy: {trial_start}")
+            except Exception as e:
+                logging.error(f"Error al inicializar período de prueba en DB: {e}")
+        
+        # Parsear fechas
+        try:
+            start_date = datetime.date.fromisoformat(trial_start)
+            last_date = datetime.date.fromisoformat(last_access)
+        except Exception as e:
+            logging.error(f"Error al parsear fechas de prueba: {e}")
+            return {
+                'activado': False,
+                'hw_id': hw_id,
+                'info': 'Error de integridad en los datos de la licencia.',
+                'en_prueba': False,
+                'dias_restantes': 0
+            }
+
+        # Control de manipulación de fecha del sistema (reloj hacia atrás)
+        if hoy < last_date:
+            logging.warning("Se detectó manipulación del reloj del sistema.")
+            return {
+                'activado': False,
+                'hw_id': hw_id,
+                'info': 'Error de reloj. Se detectó una manipulación de la fecha del sistema.',
+                'en_prueba': False,
+                'dias_restantes': 0
+            }
+
+        # Actualizar la fecha del último acceso si es posterior a la última guardada
+        if hoy > last_date:
+            try:
+                conn = _get_db_connection()
+                conn.execute("UPDATE configuracion SET last_access = ? WHERE id = 1", (hoy.isoformat(),))
+                conn.commit()
+                conn.close()
+            except Exception as e:
+                logging.error(f"Error al actualizar last_access en DB: {e}")
+
+        # Calcular días transcurridos
+        dias_transcurridos = (hoy - start_date).days
+        dias_restantes = 15 - dias_transcurridos
+
+        if dias_restantes >= 0:
+            return {
+                'activado': True,
+                'hw_id': hw_id,
+                'info': f'Modo de prueba activo. Quedan {dias_restantes} días.',
+                'en_prueba': True,
+                'dias_restantes': dias_restantes
+            }
+        else:
+            return {
+                'activado': False,
+                'hw_id': hw_id,
+                'info': 'El período de prueba de 15 días ha expirado.',
+                'en_prueba': False,
+                'dias_restantes': 0
+            }
 
     def validar_licencia_key(self, key):
         """

@@ -229,6 +229,35 @@
         .sidebar.collapsed .logo-container            { justify-content: center; padding: 12px 0; }
         .sidebar.collapsed .logo-container .nav-text  { display: none; }
 
+        /* Indicador de modo de prueba */
+        #trial-indicator {
+            margin: auto 12px 15px 12px;
+            padding: 12px;
+            background: rgba(0, 103, 192, 0.08);
+            border: 1px solid rgba(0, 103, 192, 0.2);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: #0067C0;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        .sidebar.collapsed #trial-indicator {
+            margin: auto 6px 15px 6px;
+            padding: 8px 4px;
+            background: transparent;
+            border-color: transparent;
+        }
+        .sidebar.collapsed #trial-indicator .trial-full-text {
+            display: none;
+        }
+        .sidebar.collapsed #trial-indicator .trial-short-text {
+            display: inline;
+        }
+        #trial-indicator .trial-short-text {
+            display: none;
+            font-size: 1.1rem;
+        }
+
         /* ══════════════════════════════════════════════════════════
            MAIN CONTENT
         ══════════════════════════════════════════════════════════ */
@@ -1132,6 +1161,15 @@
                 <div class="nav-icon">📺</div>
                 <span class="nav-text">Tutorial (Ayuda)</span>
             </div>
+        </div>
+        
+        <!-- Indicador de Modo de Prueba (se muestra dinámicamente) -->
+        <div id="trial-indicator" style="display:none;">
+            <div class="trial-full-text">
+                <div style="font-weight: 600; margin-bottom: 2px;">⏳ Modo de Prueba</div>
+                <div id="trial-days-left">15 días restantes</div>
+            </div>
+            <div class="trial-short-text" title="Modo de Prueba (15 días)">⏳</div>
         </div>
     </div>
 
@@ -4150,6 +4188,22 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                         if (overlay) overlay.classList.add('visible');
                         // Detener la inicialización: la app no carga sin licencia
                         return;
+                    }
+
+                    // Toggle del trial-indicator basado en estadoLic.en_prueba
+                    const trialInd = document.getElementById('trial-indicator');
+                    const trialDays = document.getElementById('trial-days-left');
+                    if (estadoLic.en_prueba) {
+                        if (trialInd) trialInd.style.display = 'block';
+                        if (trialDays) {
+                            if (estadoLic.dias_restantes === 1) {
+                                trialDays.textContent = 'Queda 1 día';
+                            } else {
+                                trialDays.textContent = `${estadoLic.dias_restantes} días restantes`;
+                            }
+                        }
+                    } else {
+                        if (trialInd) trialInd.style.display = 'none';
                     }
 
                     console.log('[JGP] ✅ Licencia válida:', estadoLic.info);
