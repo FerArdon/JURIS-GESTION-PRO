@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JURIS-GESTIÓN-PRO | El Futuro del Despacho Legal</title>
+    <meta name="description" content="Software profesional de gestión jurídica y notarial para Honduras. IA integrada, protocolo notarial digital y más.">
+    <style>
+        :root {
+            --primary: #0067c0;
+            --secondary: #10b981;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --text: #334155;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--light);
+        }
+        header {
+            background: linear-gradient(135deg, var(--dark), #1e3a5f);
+            color: white;
+            padding: 80px 20px 60px;
+            text-align: center;
+        }
+        .logo-header {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        h1 { font-size: clamp(2rem, 5vw, 3.2rem); margin-bottom: 12px; }
+        .subtitle { font-size: clamp(1rem, 2.5vw, 1.4rem); opacity: 0.85; margin-bottom: 36px; }
+        .hero-img {
+            width: 100%;
+            max-width: 820px;
+            border-radius: 14px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+            margin-bottom: 36px;
+        }
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--secondary);
+            color: white;
+            padding: 16px 36px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: opacity .2s;
+        }
+        .download-btn:hover { opacity: .85; }
+        .container {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 48px 20px;
+        }
+        .section {
+            background: white;
+            padding: 52px;
+            border-radius: 16px;
+            margin-bottom: 36px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+            border: 1px solid var(--border);
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        .feature-img {
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        h2 { color: var(--dark); font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 12px; }
+        h3 { color: var(--primary); font-size: 1.3rem; margin-bottom: 10px; }
+        p { margin-bottom: 10px; }
+        ul { padding-left: 22px; }
+        li { margin-bottom: 8px; }
+        .contact-card {
+            background: linear-gradient(135deg, var(--dark), #1e3a5f);
+            color: white;
+            padding: 52px 40px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .contact-card h2 { color: white; margin-bottom: 20px; }
+        .contact-card p { opacity: .88; margin-bottom: 8px; }
+        .contact-card .btn {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 13px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 24px;
+            font-size: 1rem;
+        }
+        footer {
+            text-align: center;
+            padding: 36px 20px;
+            color: var(--text);
+            opacity: .7;
+            font-size: .9rem;
+        }
+        @media (max-width: 700px) {
+            .feature-grid { grid-template-columns: 1fr; }
+            .section { padding: 28px 20px; }
+            header { padding: 60px 16px 40px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="assets/juris_gestion_pro_logo.png" alt="Logo JURIS GESTIÓN PRO" class="logo-header">
+    <h1>⚖️ JURIS-GESTIÓN-PRO</h1>
+    <p class="subtitle">La Revolución en la Gestión Jurídica y Notarial de Honduras</p>
+    <img src="assets/promo_hero.png" alt="JURIS GESTIÓN PRO" class="hero-img">
+    <a href="https://github.com/FerArdon/JURIS-GESTION-PRO/releases/latest" class="download-btn">
+        ⬇️ Descargar gratis — Windows 10/11
+    </a>
+</header>
+
+<div class="container">
+
+    <div class="section">
+        <div class="feature-grid">
+            <div>
+                <span class="badge">Inteligencia Artificial</span>
+                <h3>🤖 JURIS-AI: Su Asistente Legal Inteligente</h3>
+                <p>No pierda más tiempo en redacciones repetitivas. Nuestro asistente de IA integrado le ayuda a:</p>
+                <ul>
+                    <li>Redactar borradores de demandas y escritos en segundos.</li>
+                    <li>Analizar incidentes procesales según la materia.</li>
+                    <li>Autocompletar plantillas con datos reales de clientes.</li>
+                </ul>
+            </div>
+            <img src="assets/juris_ai_promo.png" alt="JURIS AI" class="feature-img">
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="feature-grid" style="direction:rtl;">
+            <div style="direction:ltr;">
+                <span class="badge">Analítica</span>
+                <h3>📊 Dashboard Analítico de Alto Nivel</h3>
+                <p>Tome decisiones basadas en datos reales. Visualice de un vistazo:</p>
+                <ul>
+                    <li>Honorarios proyectados y metas mensuales.</li>
+                    <li>Métricas de rendimiento y estados de expedientes.</li>
+                    <li>Historial de clientes y casos activos.</li>
+                </ul>
+            </div>
+            <img src="assets/dashboard_promo_1778001884896.png" alt="Dashboard" class="feature-img">
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="feature-grid">
+            <div>
+                <span class="badge">Notaría</span>
+                <h3>📜 Protocolo Notarial Digital</h3>
+                <p>Gestione su libro de protocolo con precisión milimétrica:</p>
+                <ul>
+                    <li>Control automático de folios e instrumentos.</li>
+                    <li>Alertas de límite y exportación rápida de índices.</li>
+                    <li>Registro cronológico conforme a normativa hondureña.</li>
+                </ul>
+            </div>
+            <img src="assets/protocolo_promo.png" alt="Protocolo" class="feature-img">
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="feature-grid" style="direction:rtl;">
+            <div style="direction:ltr;">
+                <span class="badge">Privacidad</span>
+                <h3>🛡️ Escudo de Datos — Privacidad Total</h3>
+                <p>Sus datos le pertenecen solo a usted:</p>
+                <ul>
+                    <li>Funcionamiento 100% offline, sin servidores externos.</li>
+                    <li>Respaldos automáticos cifrados.</li>
+                    <li>Seguridad por PIN de acceso.</li>
+                </ul>
+            </div>
+            <img src="assets/seguridad_promo.png" alt="Seguridad" class="feature-img">
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 style="text-align:center; margin-bottom:28px;">🛠️ Especificaciones Técnicas</h2>
+        <ul style="max-width:500px; margin:0 auto; font-size:1.05rem;">
+            <li>Compatible con <strong>Windows 10 y 11</strong></li>
+            <li>Motor SQL local de alta velocidad</li>
+            <li>Interfaz moderna con modo oscuro</li>
+            <li>Instalador de un clic — sin configuración</li>
+            <li>Tamaño de instalación ligero (&lt;50 MB)</li>
+        </ul>
+    </div>
+
+    <div class="contact-card">
+        <h2>¡Lleve su despacho al futuro hoy mismo!</h2>
+        <p>Para información o adquisición de licencias:</p>
+        <p><strong>Ing. Fernando Rafael Ardón Rodríguez</strong></p>
+        <p>📱 WhatsApp: +504-3352-7444</p>
+        <p>📧 frardonr@hotmail.com</p>
+        <a href="mailto:frardonr@hotmail.com?subject=Solicitud%20de%20Licencia%20JURIS-GESTI%C3%93N-PRO" class="btn">
+            📩 Solicitar Información
+        </a>
+    </div>
+
+</div>
+
+<footer>
+    <p>JURIS-GESTIÓN-PRO &copy; 2026 — Ing. Fernando Rafael Ardón Rodríguez · FEMA Honduras</p>
+    <p style="margin-top:8px;">Todos los derechos reservados.</p>
+</footer>
+
+</body>
+</html>
