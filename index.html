@@ -1,294 +1,552 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JURIS-GESTIÓN-PRO | El Futuro del Despacho Legal</title>
-    <meta name="description" content="Software profesional de gestión jurídica y notarial para Honduras. IA integrada, protocolo notarial digital y más.">
-    <style>
-        :root {
-            --primary: #0067c0;
-            --secondary: #10b981;
-            --dark: #0f172a;
-            --light: #f8fafc;
-            --text: #334155;
-            --border: #e2e8f0;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            background-color: var(--light);
-        }
-        header {
-            background: linear-gradient(135deg, var(--dark), #1e3a5f);
-            color: white;
-            padding: 80px 20px 60px;
-            text-align: center;
-        }
-        .logo-header {
-            width: 72px;
-            height: 72px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-        }
-        h1 { font-size: clamp(2rem, 5vw, 3.2rem); margin-bottom: 12px; }
-        .subtitle { font-size: clamp(1rem, 2.5vw, 1.4rem); opacity: 0.85; margin-bottom: 36px; }
-        .hero-img {
-            width: 100%;
-            max-width: 820px;
-            border-radius: 14px;
-            box-shadow: 0 24px 48px rgba(0,0,0,0.4);
-            margin-bottom: 36px;
-        }
-        .download-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--secondary);
-            color: white;
-            padding: 16px 36px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: opacity .2s;
-        }
-        .download-btn:hover { opacity: .85; }
-        .container {
-            max-width: 1040px;
-            margin: 0 auto;
-            padding: 48px 20px;
-        }
-        .section {
-            background: white;
-            padding: 52px;
-            border-radius: 16px;
-            margin-bottom: 36px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-            border: 1px solid var(--border);
-        }
-        .feature-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
-        }
-        .feature-img {
-            width: 100%;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        .badge {
-            display: inline-block;
-            background: var(--secondary);
-            color: white;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-        }
-        h2 { color: var(--dark); font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 12px; }
-        h3 { color: var(--primary); font-size: 1.3rem; margin-bottom: 10px; }
-        p { margin-bottom: 10px; }
-        ul { padding-left: 22px; }
-        li { margin-bottom: 8px; }
-        .contact-card {
-            background: linear-gradient(135deg, var(--dark), #1e3a5f);
-            color: white;
-            padding: 52px 40px;
-            border-radius: 16px;
-            text-align: center;
-        }
-        .contact-card h2 { color: white; margin-bottom: 20px; }
-        .contact-card p { opacity: .88; margin-bottom: 8px; }
-        .contact-card .btn {
-            display: inline-block;
-            background: var(--secondary);
-            color: white;
-            padding: 13px 32px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 700;
-            margin-top: 24px;
-            font-size: 1rem;
-        }
-        footer {
-            text-align: center;
-            padding: 36px 20px;
-            color: var(--text);
-            opacity: .7;
-            font-size: .9rem;
-        }
-        @media (max-width: 700px) {
-            .feature-grid { grid-template-columns: 1fr; }
-            .section { padding: 28px 20px; }
-            header { padding: 60px 16px 40px; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>JURIS-GESTIÓN-PRO | Software Legal para Abogados · Honduras</title>
+  <meta name="description" content="Software de escritorio para gestión de expedientes judiciales, protocolo notarial, actuaciones procesales y control de clientes. Diseñado para abogados y despachos legales en Honduras." />
+  <meta name="keywords" content="software legal Honduras, gestión expedientes judiciales, protocolo notarial, despacho legal, SEDCAF, Fer Ardón" />
+  <meta name="author" content="Fer Ardón – SEDCAF" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="JURIS-GESTIÓN-PRO · Software Legal Honduras" />
+  <meta property="og:description" content="Gestión de expedientes, actuaciones procesales y protocolo notarial. Todo sin internet, en tu computadora." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ferardon.github.io/JURIS-GESTION-PRO/" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="assets/img/logo_sedcaf.png" type="image/png" />
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
 
-<header>
-    <img src="assets/juris_gestion_pro_logo.png" alt="Logo JURIS GESTIÓN PRO" class="logo-header">
-    <h1>⚖️ JURIS-GESTIÓN-PRO</h1>
-    <p class="subtitle">La Revolución en la Gestión Jurídica y Notarial de Honduras</p>
-    <img src="assets/promo_hero.png" alt="JURIS GESTIÓN PRO" class="hero-img">
-    <a href="https://github.com/FerArdon/JURIS-GESTION-PRO/releases/latest" class="download-btn">
-        ⬇️ Descargar gratis — Windows 10/11
-    </a>
-</header>
-
-<div class="container">
-
-    <div class="section">
-        <div class="feature-grid">
-            <div>
-                <span class="badge">Inteligencia Artificial</span>
-                <h3>🤖 JURIS-AI: Su Asistente Legal Inteligente</h3>
-                <p>No pierda más tiempo en redacciones repetitivas. Nuestro asistente de IA integrado le ayuda a:</p>
-                <ul>
-                    <li>Redactar borradores de demandas y escritos en segundos.</li>
-                    <li>Analizar incidentes procesales según la materia.</li>
-                    <li>Autocompletar plantillas con datos reales de clientes.</li>
-                </ul>
-            </div>
-            <img src="assets/juris_ai_promo.png" alt="JURIS AI" class="feature-img">
-        </div>
+  <!-- ═══════════════════════════════════════════════
+       NAVBAR
+  ══════════════════════════════════════════════════ -->
+  <nav class="navbar" role="navigation" aria-label="Navegación principal">
+    <div class="navbar-brand">
+      <img src="assets/img/logo_sedcaf.png"
+           alt="Logo SEDCAF"
+           width="32" height="32"
+           style="border-radius:6px;" />
+      JURIS-GESTIÓN-PRO
+      <span class="badge-sedcaf">SEDCAF</span>
     </div>
 
-    <div class="section">
-        <div class="feature-grid" style="direction:rtl;">
-            <div style="direction:ltr;">
-                <span class="badge">Analítica</span>
-                <h3>📊 Dashboard Analítico de Alto Nivel</h3>
-                <p>Tome decisiones basadas en datos reales. Visualice de un vistazo:</p>
-                <ul>
-                    <li>Honorarios proyectados y metas mensuales.</li>
-                    <li>Métricas de rendimiento y estados de expedientes.</li>
-                    <li>Historial de clientes y casos activos.</li>
-                </ul>
-            </div>
-            <img src="assets/dashboard_promo_1778001884896.png" alt="Dashboard" class="feature-img">
-        </div>
-    </div>
+    <ul class="navbar-links">
+      <li><a href="#modulos">Módulos</a></li>
+      <li><a href="#caracteristicas">Características</a></li>
+      <li><a href="#licencias">Licencias</a></li>
+      <li><a href="#descarga">Descarga</a></li>
+      <li><a href="https://ferardon.github.io/sedcaf/" target="_blank">← SEDCAF</a></li>
+      <li><a href="#contacto" class="btn-nav" id="btn-contacto-nav">Contactar</a></li>
+    </ul>
+  </nav>
 
-    <div class="section">
-        <div class="feature-grid">
-            <div>
-                <span class="badge">Notaría</span>
-                <h3>📜 Protocolo Notarial Digital</h3>
-                <p>Gestione su libro de protocolo con precisión milimétrica:</p>
-                <ul>
-                    <li>Control automático de folios e instrumentos.</li>
-                    <li>Alertas de límite y exportación rápida de índices.</li>
-                    <li>Registro cronológico conforme a normativa hondureña.</li>
-                </ul>
-            </div>
-            <img src="assets/protocolo_promo.png" alt="Protocolo" class="feature-img">
-        </div>
-    </div>
+  <!-- ═══════════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════════════ -->
+  <header id="inicio" class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        ⚖️ Software Jurídico · Desarrollado en Honduras
+      </div>
 
-    <div class="section">
-        <div class="feature-grid" style="direction:rtl;">
-            <div style="direction:ltr;">
-                <span class="badge">Privacidad</span>
-                <h3>🛡️ Escudo de Datos — Privacidad Total</h3>
-                <p>Sus datos le pertenecen solo a usted:</p>
-                <ul>
-                    <li>Funcionamiento 100% offline, sin servidores externos.</li>
-                    <li>Respaldos automáticos cifrados.</li>
-                    <li>Seguridad por PIN de acceso.</li>
-                </ul>
-            </div>
-            <img src="assets/seguridad_promo.png" alt="Seguridad" class="feature-img">
-        </div>
-    </div>
+      <h1>
+        Gestión Legal<br />
+        <span>Sin Complicaciones</span>
+      </h1>
 
-    <div class="section">
-        <h2 style="text-align:center; margin-bottom:28px;">🛠️ Especificaciones Técnicas</h2>
-        <ul style="max-width:500px; margin:0 auto; font-size:1.05rem;">
-            <li>Compatible con <strong>Windows 10 y 11</strong></li>
-            <li>Motor SQL local de alta velocidad</li>
-            <li>Interfaz moderna con modo oscuro</li>
-            <li>Instalador de un clic — sin configuración</li>
-            <li>Tamaño de instalación ligero (&lt;50 MB)</li>
-        </ul>
-    </div>
+      <p class="hero-sub">
+        Software de escritorio profesional para abogados y despachos legales.
+        Controla expedientes, actuaciones procesales, protocolo notarial y
+        clientes — todo sin internet, con tus datos seguros en tu equipo.
+      </p>
 
-    <!-- PRECIOS -->
-    <div class="section" id="precios">
-        <h2 style="text-align:center; margin-bottom:8px;">💳 Planes y Precios</h2>
-        <p style="text-align:center; color:#64748b; margin-bottom:40px;">Licencia de uso perpetuo · Pago único · Sin suscripciones</p>
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:24px; max-width:860px; margin:0 auto;">
-            <!-- Plan Individual -->
-            <div style="border:2px solid #e2e8f0; border-radius:14px; padding:36px 28px; text-align:center; background:#f8fafc;">
-                <div style="font-size:2rem; margin-bottom:8px;">👤</div>
-                <h3 style="font-size:1.25rem; margin-bottom:4px; color:#0f172a;">Individual</h3>
-                <p style="color:#64748b; font-size:0.9rem; margin-bottom:20px;">1 equipo · Uso personal</p>
-                <div style="font-size:2.4rem; font-weight:800; color:#0067c0; margin-bottom:4px;">L. 2,000</div>
-                <p style="color:#64748b; font-size:0.85rem; margin-bottom:24px;">pago único</p>
-                <ul style="text-align:left; padding-left:18px; font-size:0.95rem; margin-bottom:0;">
-                    <li>Todas las funciones incluidas</li>
-                    <li>Actualizaciones de por vida</li>
-                    <li>Soporte por WhatsApp</li>
-                </ul>
-            </div>
-            <!-- Plan Profesional -->
-            <div style="border:2px solid #0067c0; border-radius:14px; padding:36px 28px; text-align:center; background:#eff6ff; position:relative;">
-                <div style="position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:#0067c0; color:white; padding:4px 18px; border-radius:20px; font-size:0.8rem; font-weight:700; white-space:nowrap;">MÁS POPULAR</div>
-                <div style="font-size:2rem; margin-bottom:8px;">⚖️</div>
-                <h3 style="font-size:1.25rem; margin-bottom:4px; color:#0f172a;">Profesional</h3>
-                <p style="color:#64748b; font-size:0.9rem; margin-bottom:20px;">Hasta 3 equipos · Bufete pequeño</p>
-                <div style="font-size:2.4rem; font-weight:800; color:#0067c0; margin-bottom:4px;">L. 4,000</div>
-                <p style="color:#64748b; font-size:0.85rem; margin-bottom:24px;">pago único</p>
-                <ul style="text-align:left; padding-left:18px; font-size:0.95rem; margin-bottom:0;">
-                    <li>Todo lo del plan Individual</li>
-                    <li>Configuración de marca/bufete</li>
-                    <li>Soporte prioritario</li>
-                </ul>
-            </div>
-            <!-- Plan Institucional -->
-            <div style="border:2px solid #e2e8f0; border-radius:14px; padding:36px 28px; text-align:center; background:#f8fafc;">
-                <div style="font-size:2rem; margin-bottom:8px;">🏛️</div>
-                <h3 style="font-size:1.25rem; margin-bottom:4px; color:#0f172a;">Institucional</h3>
-                <p style="color:#64748b; font-size:0.9rem; margin-bottom:20px;">Usuarios ilimitados · Firma grande</p>
-                <div style="font-size:2.4rem; font-weight:800; color:#0067c0; margin-bottom:4px;">L. 8,000</div>
-                <p style="color:#64748b; font-size:0.85rem; margin-bottom:24px;">pago único</p>
-                <ul style="text-align:left; padding-left:18px; font-size:0.95rem; margin-bottom:0;">
-                    <li>Todo lo del plan Profesional</li>
-                    <li>Instalación asistida en sitio</li>
-                    <li>Capacitación al equipo</li>
-                </ul>
-            </div>
-        </div>
-        <p style="text-align:center; margin-top:32px; color:#64748b; font-size:0.9rem;">
-            ¿Dudas sobre qué plan elegir? <a href="https://wa.me/50433527444?text=Hola%2C%20me%20interesa%20JURIS-GESTI%C3%93N-PRO" style="color:#0067c0; font-weight:600;">Escríbame por WhatsApp</a> y lo orientamos sin compromiso.
-        </p>
-    </div>
-
-    <div class="contact-card">
-        <h2>¡Lleve su despacho al futuro hoy mismo!</h2>
-        <p>Para información o adquisición de licencias:</p>
-        <p><strong>Ing. Fernando Rafael Ardón Rodríguez</strong></p>
-        <p>📱 WhatsApp: +504-3352-7444</p>
-        <p>📧 frardonr@hotmail.com</p>
-        <a href="mailto:frardonr@hotmail.com?subject=Solicitud%20de%20Licencia%20JURIS-GESTI%C3%93N-PRO" class="btn">
-            📩 Solicitar Información
+      <div class="hero-actions">
+        <a href="#descarga" class="btn-primary" id="btn-descarga-hero">
+          ⬇ Descargar gratis
         </a>
+        <a href="#modulos" class="btn-secondary" id="btn-modulos-hero">
+          Ver módulos →
+        </a>
+      </div>
+
+      <div class="hero-mockup">
+        <img src="assets/img/hero_mockup.jpg"
+             alt="JURIS-GESTIÓN-PRO — Dashboard en pantalla"
+             loading="lazy" />
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num"><span>5</span></div>
+          <div class="stat-lbl">Módulos integrados</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">100<span>%</span></div>
+          <div class="stat-lbl">Sin internet requerido</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">Win<span>11</span></div>
+          <div class="stat-lbl">Optimizado para</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num"><span>∞</span></div>
+          <div class="stat-lbl">Licencia permanente</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num"><span id="counter-visitas">—</span></div>
+          <div class="stat-lbl">Visitas al sitio</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num"><span id="counter-descargas">—</span></div>
+          <div class="stat-lbl">Descargas</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════
+       MÓDULOS
+  ══════════════════════════════════════════════════ -->
+  <section id="modulos">
+    <div class="container">
+      <p class="section-label">Funcionalidades</p>
+      <h2 class="section-title">Cinco módulos, una sola herramienta</h2>
+      <p class="section-sub">
+        Cada módulo está diseñado para las necesidades reales de un despacho
+        legal hondureño: rápido, confiable y sin depender de internet.
+      </p>
+
+      <div class="modulos-grid">
+
+        <!-- Clientes -->
+        <div class="modulo-card">
+          <div class="modulo-icon">👥</div>
+          <h3>Gestión de Clientes (CRM)</h3>
+          <p>
+            Registra y administra tu cartera de clientes con datos completos:
+            nombre, DNI, RTN, teléfono, correo y dirección. Búsqueda
+            instantánea y perfiles individuales con historial de expedientes.
+          </p>
+          <div class="modulo-tags">
+            <span class="modulo-tag">DNI / RTN</span>
+            <span class="modulo-tag">Historial</span>
+            <span class="modulo-tag">Búsqueda</span>
+          </div>
+        </div>
+
+        <!-- Expedientes -->
+        <div class="modulo-card">
+          <div class="modulo-icon">📁</div>
+          <h3>Control de Expedientes</h3>
+          <p>
+            Organiza todos tus casos judiciales por número de expediente,
+            juzgado, materia y estado (Activo, En Proceso, Cerrado).
+            Registro completo de la resolución y fechas clave.
+          </p>
+          <div class="modulo-tags">
+            <span class="modulo-tag">Por Juzgado</span>
+            <span class="modulo-tag">Por Materia</span>
+            <span class="modulo-tag">Estado</span>
+          </div>
+        </div>
+
+        <!-- Actuaciones -->
+        <div class="modulo-card">
+          <div class="modulo-icon">📋</div>
+          <h3>Actuaciones Procesales</h3>
+          <p>
+            Registra audiencias, observaciones e incidentes procesales con
+            fecha y hora exacta. Controla montos involucrados y genera el
+            historial completo de cada caso con un clic.
+          </p>
+          <div class="modulo-tags">
+            <span class="modulo-tag">Audiencias</span>
+            <span class="modulo-tag">Incidentes</span>
+            <span class="modulo-tag">Montos</span>
+          </div>
+        </div>
+
+        <!-- Protocolo -->
+        <div class="modulo-card">
+          <div class="modulo-icon">📜</div>
+          <h3>Libro de Protocolo Notarial</h3>
+          <p>
+            Lleva el registro oficial de instrumentos notariales con número,
+            fecha de otorgamiento, naturaleza del acto y foliación exacta.
+            Soporte de múltiples tomos con folio automático.
+          </p>
+          <div class="modulo-tags">
+            <span class="modulo-tag">Instrumentos</span>
+            <span class="modulo-tag">Tomos</span>
+            <span class="modulo-tag">Foliación</span>
+          </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="modulo-card">
+          <div class="modulo-icon">📊</div>
+          <h3>Dashboard e Informes</h3>
+          <p>
+            Visualiza el estado general de tu despacho: casos activos,
+            próximas audiencias y estadísticas clave. Exporta informes
+            en PDF directamente desde la aplicación.
+          </p>
+          <div class="modulo-tags">
+            <span class="modulo-tag">Estadísticas</span>
+            <span class="modulo-tag">PDF</span>
+            <span class="modulo-tag">Gráficas</span>
+          </div>
+        </div>
+
+        <!-- Configuración -->
+        <div class="modulo-card">
+          <div class="modulo-icon">⚙️</div>
+          <h3>Marca Blanca Configurable</h3>
+          <p>
+            Personaliza la app con el nombre de tu despacho, logo, lema legal
+            y número de exequátur. Protege el acceso con PIN y adapta el
+            sistema a tu identidad institucional.
+          </p>
+          <div class="modulo-tags">
+            <span class="modulo-tag">Logo propio</span>
+            <span class="modulo-tag">Exequátur</span>
+            <span class="modulo-tag">PIN de acceso</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       CARACTERÍSTICAS
+  ══════════════════════════════════════════════════ -->
+  <section id="caracteristicas">
+    <div class="container">
+      <p class="section-label">Por qué elegirlo</p>
+      <h2 class="section-title">Diseñado para la realidad hondureña</h2>
+      <p class="section-sub">
+        No es un sistema en la nube genérico. Es una herramienta construida
+        entendiendo cómo trabajan los despachos legales en Honduras.
+      </p>
+
+      <div class="features-grid">
+
+        <div class="feature-item">
+          <span class="feature-icon">🔒</span>
+          <div>
+            <h4>100% Offline y Seguro</h4>
+            <p>Tus datos nunca salen de tu computadora. Base de datos SQLite local, sin servidores externos.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <span class="feature-icon">⚡</span>
+          <div>
+            <h4>Arranque Ultrarrápido</h4>
+            <p>Abre en segundos. Sin pantallas de carga, sin actualizaciones forzadas, sin suscripciones en línea.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <span class="feature-icon">🔑</span>
+          <div>
+            <h4>Licencia por Hardware</h4>
+            <p>La clave está vinculada a tu equipo. Nadie más puede usar tu licencia en otro dispositivo.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <span class="feature-icon">🖥️</span>
+          <div>
+            <h4>Interfaz Moderna</h4>
+            <p>Diseño oscuro profesional, navegación por pestañas y experiencia visual de primera clase.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <span class="feature-icon">📄</span>
+          <div>
+            <h4>Exportación a PDF</h4>
+            <p>Genera informes profesionales de expedientes y actuaciones listos para imprimir o adjuntar.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <span class="feature-icon">🔄</span>
+          <div>
+            <h4>Actualizaciones sin Perder Datos</h4>
+            <p>El sistema migra automáticamente tu base de datos cuando se actualiza, sin perder ningún expediente.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <span class="feature-icon">🏛️</span>
+          <div>
+            <h4>Protocolo Notarial Oficial</h4>
+            <p>Foliación y numeración de tomos conforme a los requerimientos legales vigentes en Honduras.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <span class="feature-icon">🤖</span>
+          <div>
+            <h4>Asistente IA Integrado</h4>
+            <p>Conecta tu propia API de IA para obtener asistencia legal contextual directamente en la app.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       LICENCIAS
+  ══════════════════════════════════════════════════ -->
+  <section id="licencias">
+    <div class="container">
+      <p class="section-label">Planes de Licencia</p>
+      <h2 class="section-title">Elige el plan que se adapta a ti</h2>
+      <p class="section-sub">
+        Todas las licencias incluyen acceso completo a todos los módulos.
+        Contáctanos para obtener tu clave de activación.
+      </p>
+
+      <div class="licencias-grid">
+
+        <div class="licencia-card">
+          <div class="lic-icono">🧪</div>
+          <div class="lic-periodo">10 días</div>
+          <div class="lic-nombre">Prueba</div>
+          <div class="lic-precio gratis">Gratis</div>
+          <div class="lic-usd">Sin tarjeta ni registro</div>
+          <div class="lic-desc">Acceso completo para evaluar el sistema sin compromisos.</div>
+        </div>
+
+        <div class="licencia-card">
+          <div class="lic-icono">📅</div>
+          <div class="lic-periodo">1 mes</div>
+          <div class="lic-nombre">Mensual</div>
+          <div class="lic-precio">L499</div>
+          <div class="lic-usd">~$18.63 USD</div>
+          <div class="lic-desc">Ideal para proyectos cortos o períodos de uso puntual.</div>
+        </div>
+
+        <div class="licencia-card destacado">
+          <div class="lic-icono">📆</div>
+          <div class="lic-periodo">6 meses</div>
+          <div class="lic-nombre">Semestral</div>
+          <div class="lic-precio">L1,999</div>
+          <div class="lic-usd">~$74.64 USD · Ahorrás 33%</div>
+          <div class="lic-desc">La mejor relación costo-beneficio para uso continuo.</div>
+        </div>
+
+        <div class="licencia-card">
+          <div class="lic-icono">🗓️</div>
+          <div class="lic-periodo">1 año</div>
+          <div class="lic-nombre">Anual</div>
+          <div class="lic-precio">L3,499</div>
+          <div class="lic-usd">~$130.66 USD · Ahorrás 42%</div>
+          <div class="lic-desc">Cobertura completa por todo el año, sin interrupciones.</div>
+        </div>
+
+        <div class="licencia-card">
+          <div class="lic-icono">♾️</div>
+          <div class="lic-periodo">Pago único</div>
+          <div class="lic-nombre">Permanente</div>
+          <div class="lic-precio">L5,999</div>
+          <div class="lic-usd">~$224.00 USD</div>
+          <div class="lic-desc">Paga una vez, úsala para siempre. Sin renovaciones.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       DESCARGA
+  ══════════════════════════════════════════════════ -->
+  <section id="descarga">
+    <div class="container">
+      <p class="section-label">Instalación</p>
+      <h2 class="section-title">Listo para instalar en minutos</h2>
+      <p class="section-sub">
+        Descarga el instalador, ejecútalo con doble clic y en menos de un minuto
+        tendrás JURIS-GESTIÓN-PRO funcionando en tu equipo Windows.
+      </p>
+
+      <div class="download-box">
+        <h3>⬇ JURIS-GESTIÓN-PRO v1.0</h3>
+        <p>Instalador para Windows 10 / 11 · 64 bits · ~29 MB</p>
+
+        <a href="https://github.com/FerArdon/JURIS-GESTION-PRO/releases/latest"
+           class="btn-primary"
+           id="btn-descarga-releases"
+           target="_blank">
+          ⬇ Descargar desde GitHub Releases
+        </a>
+
+        <div class="download-meta">
+          <span>🖥️ Windows 10 / 11</span>
+          <span>📦 ~29 MB</span>
+          <span>🔒 Sin internet requerido</span>
+          <span>✅ Instalador firmado</span>
+        </div>
+      </div>
+
+      <div class="contacto-box">
+        <div>
+          <h3>¿Necesitas tu clave de activación?</h3>
+          <p>Escríbenos al correo institucional para solicitar tu licencia o renovarla.</p>
+        </div>
+        <a href="mailto:sedcaf.consultores@outlook.com?subject=Solicitud%20Licencia%20JURIS-GESTI%C3%93N-PRO"
+           class="btn-green"
+           id="btn-email-licencia">
+          ✉️ sedcaf.consultores@outlook.com
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       CONTACTO
+  ══════════════════════════════════════════════════ -->
+  <section id="contacto" style="padding-top: 2rem; padding-bottom: 5.5rem;">
+    <div class="container">
+      <p class="section-label">Soporte</p>
+      <h2 class="section-title">Estamos para ayudarte</h2>
+      <p class="section-sub">
+        ¿Tienes dudas sobre la instalación, la licencia o el uso del sistema?
+        Contáctanos directamente.
+      </p>
+
+      <div class="contacto-box" style="margin-top: 2rem;">
+        <div>
+          <h3>📧 Correo institucional SEDCAF</h3>
+          <p>Tiempo de respuesta habitual: 24–48 horas hábiles · Tegucigalpa, Honduras</p>
+        </div>
+        <a href="mailto:sedcaf.consultores@outlook.com"
+           class="btn-green"
+           id="btn-email-contacto">
+          ✉️ Escribir ahora
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════ -->
+  <footer>
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <h4>⚖️ JURIS-GESTIÓN-PRO</h4>
+        <p>
+          Software de gestión legal desarrollado por SEDCAF —
+          Servicios de Consultoría y Asesoría Forestal, Honduras.
+          Diseñado para abogados y notarios que valoran la eficiencia.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Navegación</h5>
+        <ul>
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#modulos">Módulos</a></li>
+          <li><a href="#caracteristicas">Características</a></li>
+          <li><a href="#licencias">Licencias</a></li>
+          <li><a href="#descarga">Descarga</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>SEDCAF</h5>
+        <ul>
+          <li><a href="https://ferardon.github.io/sedcaf/" target="_blank">Sitio Principal</a></li>
+          <li><a href="https://ferardon.github.io/sedcaf/#servicios" target="_blank">Servicios Forestales</a></li>
+          <li><a href="https://ferardon.github.io/SilvaDeskPro/" target="_blank">SilvaDesk Pro</a></li>
+          <li><a href="mailto:sedcaf.consultores@outlook.com">sedcaf.consultores@outlook.com</a></li>
+        </ul>
+      </div>
+
+      </div><!-- /.footer-grid -->
+
+      <div class="footer-bottom">
+        <p>© 2026 SEDCAF – Servicios de Consultoría y Asesoría Forestal. Todos los derechos reservados.</p>
+        <p>Desarrollado por <a href="https://ferardon.github.io/sedcaf/" target="_blank">Ing. Fer Ardón</a> · Tegucigalpa, Honduras</p>
+      </div>
+
+    </div><!-- /.container -->
+  </footer>
+
+  <script>
+    /* === Contador de descargas (GitHub Releases API) === */
+    fetch('https://api.github.com/repos/FerArdon/JURIS-GESTION-PRO/releases')
+      .then(r => r.json())
+      .then(releases => {
+        const total = releases.reduce((sum, rel) =>
+          sum + rel.assets.reduce((s, a) => s + a.download_count, 0), 0);
+        document.getElementById('counter-descargas').textContent =
+          total > 0 ? total.toLocaleString('es-HN') : '0';
+      })
+      .catch(() => { document.getElementById('counter-descargas').textContent = '0'; });
+
+    /* === Contador de visitas (countapi.xyz) === */
+    fetch('https://api.countapi.xyz/hit/ferardon.github.io-juris/visits')
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById('counter-visitas').textContent =
+          data.value ? data.value.toLocaleString('es-HN') : '1';
+      })
+      .catch(() => { document.getElementById('counter-visitas').textContent = '—'; });
+  </script>
+
+</body>
+</html>
+
     </div>
 
-</div>
+    <div class="footer-bottom">
+      <p>© 2026 SEDCAF – Servicios de Consultoría y Asesoría Forestal. Todos los derechos reservados.</p>
+      <p>Desarrollado por <a href="https://ferardon.github.io/sedcaf/" target="_blank">Ing. Fer Ardón</a> · Tegucigalpa, Honduras</p>
+    </div>
+  </footer>
 
-<footer>
-    <p>JURIS-GESTIÓN-PRO &copy; 2026 — Ing. Fernando Rafael Ardón Rodríguez · FEMA Honduras</p>
-    <p style="margin-top:8px;">Todos los derechos reservados.</p>
-</footer>
+
+<script>
+  // Descargas reales desde GitHub Releases API
+  fetch('https://api.github.com/repos/FerArdon/JURIS-GESTION-PRO/releases')
+    .then(r => r.json())
+    .then(releases => {
+      const total = releases.reduce((sum, rel) =>
+        sum + rel.assets.reduce((s, a) => s + a.download_count, 0), 0);
+      document.getElementById('counter-descargas').textContent =
+        total > 0 ? total.toLocaleString('es-HN') : '0';
+    })
+    .catch(() => {
+      document.getElementById('counter-descargas').textContent = '0';
+    });
+
+  // Contador de visitas gratuito
+  fetch('https://api.countapi.xyz/hit/ferardon.github.io-juris/visits')
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('counter-visitas').textContent =
+        data.value ? data.value.toLocaleString('es-HN') : '1';
+    })
+    .catch(() => {
+      document.getElementById('counter-visitas').textContent = '—';
+    });
+</script>
 
 </body>
 </html>
