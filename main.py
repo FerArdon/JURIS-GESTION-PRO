@@ -347,16 +347,25 @@ class JurisAPI:
 
     @log_performance
     def get_casos(self, estado="Activo"):
-        """Consulta los casos por estado desde SQLite para la tabla."""
+        """Consulta los casos por estado desde SQLite para la tabla.
+           Si estado es None devuelve todos los expedientes (usado por el selector de audiencias)."""
         try:
             conn = _get_db_connection()
             cursor = conn.cursor()
-            cursor.execute('''
-                SELECT e.id_expediente, c.nombre_completo, e.estado, e.fecha_creacion, e.juzgado
-                FROM expedientes e
-                JOIN clientes c ON e.id_cliente = c.id_cliente
-                WHERE e.estado = ?
-            ''', (estado,))
+            if estado is None:
+                cursor.execute('''
+                    SELECT e.id_expediente, c.nombre_completo, e.estado, e.fecha_creacion, e.juzgado
+                    FROM expedientes e
+                    JOIN clientes c ON e.id_cliente = c.id_cliente
+                    ORDER BY e.fecha_creacion DESC
+                ''')
+            else:
+                cursor.execute('''
+                    SELECT e.id_expediente, c.nombre_completo, e.estado, e.fecha_creacion, e.juzgado
+                    FROM expedientes e
+                    JOIN clientes c ON e.id_cliente = c.id_cliente
+                    WHERE e.estado = ?
+                ''', (estado,))
             casos = [dict(row) for row in cursor.fetchall()]
             conn.close()
             return casos
@@ -441,16 +450,28 @@ class JurisAPI:
             logging.error(f"Error al quitar logo: {e}")
             return str(e)
 
-    def guardar_configuracion(self, nombre, lema, pin=None, exequatur=None, tomo=None, folio_ini=None, limite=None):
+    def actualizar_exequatur(self, valor):
+        """Guarda el número de Exequátur desde el módulo de Protocolo."""
+        try:
+            conn = _get_db_connection()
+            conn.execute("UPDATE configuracion SET exequatur = ? WHERE id = 1", (valor,))
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            logging.error(f"Error al actualizar exequatur: {e}")
+            return str(e)
+
+    def guardar_configuracion(self, nombre, lema, pin=None, exequatur=None, tomo=None, folio_ini=None, limite=None, api_key=None):
         """Guarda la identidad institucional, metadatos de auditoría y PIN de seguridad."""
         try:
             conn = _get_db_connection()
             cursor = conn.cursor()
-            
+
             # Actualizar campos básicos
             cursor.execute('''
-                UPDATE configuracion 
-                SET nombre_despacho = ?, lema_legal = ? 
+                UPDATE configuracion
+                SET nombre_despacho = ?, lema_legal = ?
                 WHERE id = 1
             ''', (nombre, lema))
             
@@ -463,6 +484,10 @@ class JurisAPI:
                 cursor.execute("UPDATE configuracion SET folio_inicial_tomo = ? WHERE id = 1", (folio_ini,))
             if limite is not None:
                 cursor.execute("UPDATE configuracion SET limite_tomo = ? WHERE id = 1", (limite,))
+
+            # Actualizar API Key de IA
+            if api_key is not None:
+                cursor.execute("UPDATE configuracion SET api_key_ai = ? WHERE id = 1", (api_key,))
 
             # Actualizar PIN si se proporciona uno válido
             if pin and len(pin) >= 4:
@@ -686,7 +711,13 @@ class JurisAPI:
     def get_lista_plantillas(self):
         """Escanea la carpeta de plantillas y devuelve una lista para el UI."""
         plantillas = []
+        # Buscar carpeta de plantillas: primero BASE_DIR, luego sys._MEIPASS (PyInstaller frozen)
         base_path = os.path.join(BASE_DIR, 'plantillas')
+        if not os.path.exists(base_path) and getattr(sys, '_MEIPASS', None):
+            base_path = os.path.join(sys._MEIPASS, 'plantillas')
+        if not os.path.exists(base_path):
+            # Último intento: carpeta del ejecutable
+            base_path = os.path.join(os.path.dirname(sys.executable), 'plantillas')
         if not os.path.exists(base_path): return []
         for root, dirs, files in os.walk(base_path):
             for file in files:
@@ -1077,11 +1108,11 @@ class JurisAPI:
 
             conn = _get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT nombre_institucion, lema_legal, exequatur, tomo_actual FROM configuracion WHERE id = 1")
+            cursor.execute("SELECT nombre_despacho, lema_legal, exequatur, tomo_actual FROM configuracion WHERE id = 1")
             config = cursor.fetchone()
             conn.close()
 
-            nombre_notario = config['nombre_institucion'] if config else "Notario no configurado"
+            nombre_notario = config['nombre_despacho'] if config else "Notario no configurado"
             exequatur = config['exequatur'] if config else "S/D"
             tomo = config['tomo_actual'] if config else "1"
 

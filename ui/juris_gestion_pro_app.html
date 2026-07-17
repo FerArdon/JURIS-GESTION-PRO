@@ -1177,6 +1177,15 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                         <button class="btn-send" style="background:var(--btn-secondary); color:var(--text-main);" onclick="generarIndiceNotarial()">📄 Exportar Índice</button>
                     </div>
                 </div>
+
+                <!-- Exequátur visible en Protocolo -->
+                <div style="background:var(--bg-panel); border:1px solid var(--border-color); border-left:4px solid var(--accent-green); border-radius:8px; padding:16px 20px; margin-bottom:20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:200px;">
+                        <label style="color:var(--text-muted); font-size:0.8rem; letter-spacing:.05em; text-transform:uppercase; display:block; margin-bottom:4px;">📜 Número de Exequátur</label>
+                        <input type="text" id="proto-exequatur-display" class="ai-input" style="width:100%; font-weight:bold; letter-spacing:2px; font-size:1.05rem;" placeholder="Ej: 1234-2026">
+                    </div>
+                    <button class="btn-send" style="padding:10px 20px; white-space:nowrap;" onclick="guardarExequaturProtocolo()">💾 Guardar Exequátur</button>
+                </div>
                 
                 <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
                     <div class="stat-card">
@@ -1211,7 +1220,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
             <div id="view-calendario" class="view-section">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                     <h2 style="color:var(--text-muted); font-size:1.1rem;">Calendario de Audiencias y Plazos</h2>
-                    <button class="btn-send" onclick="document.getElementById('modal-audiencia').style.display='flex'">+ Programar Audiencia</button>
+                    <button class="btn-send" onclick="abrirModalAudiencia()">+ Programar Audiencia</button>
                 </div>
                 
                 <table class="data-table" id="audienciasTable">
@@ -1248,7 +1257,9 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                         </select>
                         
                         <label style="color:var(--text-muted); display:block; margin-bottom:5px;">ID del Expediente *</label>
-                        <input type="text" id="aud-expediente" class="ai-input" style="width:100%; margin-bottom:15px;" placeholder="Ej. 2026-CIV-001">
+                        <select id="aud-expediente" class="ai-input" style="width:100%; margin-bottom:15px; background:var(--bg-dark); color:var(--text-main);">
+                            <option value="">-- Seleccione un Expediente --</option>
+                        </select>
                         
                         <label style="color:var(--text-muted); display:block; margin-bottom:5px;">Fecha y Hora *</label>
                         <div class="jgp-date-wrap" style="margin-bottom:15px;">
@@ -1605,6 +1616,24 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                         </p>
                     </div>
 
+                    <h3 style="color:var(--text-main); margin-bottom: 20px; margin-top:30px; border-top:1px solid var(--border-color); padding-top:20px;">🤖 Inteligencia Artificial (JURIS-AI)</h3>
+                    <div style="background:var(--bg-dark); padding:20px; border-radius:6px; margin-bottom:25px;">
+                        <div style="margin-bottom:15px;">
+                            <label style="color:var(--text-muted); display:block; margin-bottom:5px;">API Key de Google Gemini</label>
+                            <input type="password" id="conf-api-key" class="ai-input" style="width:100%; font-family:monospace; font-size:0.9rem; letter-spacing:2px;" placeholder="Pega aquí tu API Key de Gemini...">
+                        </div>
+                        <div style="background:rgba(0,103,192,0.08); border:1px solid rgba(0,103,192,0.25); border-radius:6px; padding:14px; font-size:0.85rem; color:var(--text-muted); line-height:1.7;">
+                            <strong style="color:var(--text-main);">📋 ¿Cómo obtener tu API Key gratis?</strong><br>
+                            1. Ingresa a <a href="#" onclick="window.pywebview.api.abrir_url('https://aistudio.google.com/app/apikey'); return false;" style="color:#0067c0; font-weight:bold;">Google AI Studio → aistudio.google.com</a><br>
+                            2. Inicia sesión con tu cuenta de Google<br>
+                            3. Haz clic en <strong>"Create API Key"</strong><br>
+                            4. Copia la clave generada y pégala en el campo de arriba<br>
+                            5. Haz clic en <strong>💾 Guardar Configuración</strong><br>
+                            <br>
+                            <span style="color:var(--status-success, #107C10); font-weight:600;">✅ El plan gratuito de Gemini es suficiente para uso diario en JURIS-AI.</span>
+                        </div>
+                    </div>
+
                     <h3 style="color:var(--text-main); margin-bottom: 20px; margin-top:30px; border-top:1px solid var(--border-color); padding-top:20px;">📂 Catálogos Externos</h3>
                     
                     <div style="margin-bottom: 30px; display:flex; align-items:flex-end; gap:20px; background:var(--bg-dark); padding:15px; border-radius:6px;">
@@ -1640,14 +1669,6 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                             <input type="color" id="conf-color-fondo" class="ai-input" style="height:40px; width:100%; cursor:pointer;" onchange="aplicarFondoPersonalizado()">
                         </div>
 
-                        <label style="color:var(--text-muted); display:block; margin-top:20px; margin-bottom:10px;">Color de Acento</label>
-                        <div style="display:flex; gap:15px; align-items:center; justify-content:flex-start;">
-                            <div onclick="cambiarAcento('#0067c0')" style="width:30px; height:30px; border-radius:50%; background:#0067c0; cursor:pointer; border:2px solid var(--border-color); box-shadow:0 0 10px rgba(0,103,192,0.5);"></div>
-                            <div onclick="cambiarAcento('#23F860')" style="width:30px; height:30px; border-radius:50%; background:#23F860; cursor:pointer; border:2px solid var(--border-color); box-shadow:0 0 10px rgba(35,248,96,0.5);"></div>
-                            <div onclick="cambiarAcento('#8b5cf6')" style="width:30px; height:30px; border-radius:50%; background:#8b5cf6; cursor:pointer; border:2px solid var(--border-color); box-shadow:0 0 10px rgba(139,92,246,0.5);"></div>
-                            <div onclick="cambiarAcento('#f43f5e')" style="width:30px; height:30px; border-radius:50%; background:#f43f5e; cursor:pointer; border:2px solid var(--border-color); box-shadow:0 0 10px rgba(244,63,94,0.5);"></div>
-                            <div onclick="cambiarAcento('#eab308')" style="width:30px; height:30px; border-radius:50%; background:#eab308; cursor:pointer; border:2px solid var(--border-color); box-shadow:0 0 10px rgba(234,179,8,0.5);"></div>
-                        </div>
                     </div>
 
                     <h3 style="color:var(--text-main); margin-bottom: 20px; margin-top:30px; border-top:1px solid var(--border-color); padding-top:20px;">🛡️ Escudo de Datos (Backups)</h3>
@@ -2739,6 +2760,20 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
             });
         }
 
+        function abrirModalAudiencia() {
+            // Cargar expedientes disponibles en el selector antes de abrir
+            window.pywebview.api.get_casos(null).then(casos => {
+                const sel = document.getElementById('aud-expediente');
+                sel.innerHTML = '<option value="">-- Seleccione un Expediente --</option>';
+                if (casos && casos.length) {
+                    casos.forEach(c => {
+                        sel.innerHTML += `<option value="${c.id_expediente}">${c.id_expediente} — ${c.nombre_completo || ''} (${c.estado})</option>`;
+                    });
+                }
+            }).catch(() => {});
+            document.getElementById('modal-audiencia').style.display = 'flex';
+        }
+
         function guardarAudiencia() {
             const tipo = document.getElementById('aud-tipo').value;
             const exp  = document.getElementById('aud-expediente').value.trim();
@@ -3515,6 +3550,12 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                 
                 if(conf.exequatur) {
                     document.getElementById('conf-exequatur').value = conf.exequatur;
+                    const protoEl = document.getElementById('proto-exequatur-display');
+                    if(protoEl) protoEl.value = conf.exequatur;
+                }
+                if(conf.api_key_ai) {
+                    const akEl = document.getElementById('conf-api-key');
+                    if(akEl) akEl.placeholder = '🔑 API Key guardada (escribe para cambiarla)';
                 }
                 if(conf.tomo_actual) {
                     document.getElementById('conf-tomo').value = conf.tomo_actual;
@@ -3587,11 +3628,27 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
             }
         }
 
+        function guardarExequaturProtocolo() {
+            const val = (document.getElementById('proto-exequatur-display').value || '').trim();
+            if (!val) return alert('⚠️ Ingresá un número de Exequátur.');
+            window.pywebview.api.actualizar_exequatur(val).then(res => {
+                if (res === true) {
+                    // Sincronizar con el campo en Configuración
+                    const confEl = document.getElementById('conf-exequatur');
+                    if (confEl) confEl.value = val;
+                    alert('✅ Exequátur guardado correctamente.');
+                } else {
+                    alert('❌ Error: ' + res);
+                }
+            });
+        }
+
         function guardarConfiguracion() {
-            const nombre = document.getElementById('conf-nombre').value.trim();
-            const lema   = document.getElementById('conf-lema').value.trim();
-            const pin    = document.getElementById('conf-pin').value;
-            
+            const nombre  = document.getElementById('conf-nombre').value.trim();
+            const lema    = document.getElementById('conf-lema').value.trim();
+            const pin     = document.getElementById('conf-pin').value;
+            const api_key = (document.getElementById('conf-api-key').value || '').trim();
+
             // Metadatos de Auditoría
             const exequatur = document.getElementById('conf-exequatur').value.trim();
             const tomo      = parseInt(document.getElementById('conf-tomo').value) || 1;
@@ -3600,12 +3657,15 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
 
             if (!nombre) return alert('⚠️ El nombre del despacho es obligatorio.');
             if (pin && pin.length < 4) return alert('⚠️ El PIN debe tener mínimo 4 dígitos.');
-            
+
             window.pywebview.api.guardar_configuracion(
                 nombre, lema, pin || null,
-                exequatur, tomo, folio_ini, limite
+                exequatur, tomo, folio_ini, limite, api_key || null
             ).then(res => {
                 if (res === true) {
+                    // Sincronizar Exequátur con el bloque de Protocolo
+                    const protoEl = document.getElementById('proto-exequatur-display');
+                    if (protoEl && exequatur) protoEl.value = exequatur;
                     alert('✅ Configuración guardada.' + (pin ? ' PIN de seguridad actualizado.' : ''));
                     document.getElementById('header-bufete').innerText = nombre;
                     document.getElementById('ficha-bufete-nombre').innerText = nombre;
