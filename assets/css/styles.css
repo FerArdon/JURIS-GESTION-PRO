@@ -498,6 +498,29 @@ section { padding: 5.5rem 2rem; }
   margin-bottom: .6rem;
 }
 
+.btn-pay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  width: 100%;
+  margin-top: .85rem;
+  background: linear-gradient(135deg, #25D366 0%, #1aa650 100%);
+  color: #ffffff;
+  padding: .7rem 1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: .85rem;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+  transition: transform .15s, box-shadow .2s;
+}
+
+.btn-pay:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(37, 211, 102, 0.5);
+  color: #ffffff;
+}
+
 /* ── Descarga ────────────────────────────────────────────── */
 .download-box {
   background: linear-gradient(135deg, rgba(0,103,192,0.15) 0%, rgba(74,158,92,0.08) 100%);
