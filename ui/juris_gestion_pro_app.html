@@ -20,52 +20,52 @@
            · Panel JURIS-AI: overlay flotante estilo Copilot
         ══════════════════════════════════════════════════════════════ */
 
-        /* ── Design Tokens — WinUI 3 / Fluent Design ────────────── */
+        /* ── Design Tokens — JURIS GESTIÓN PRO · Paleta Azul Marina ─ */
         :root {
-            /* Layer System */
-            --f-base:        #F3F3F3;   /* Mica / desktop layer */
-            --f-surface:     #FFFFFF;   /* Card / panel surface */
-            --f-surface-alt: #F9F9F9;   /* NavigationView pane light */
-            --f-overlay:     rgba(255,255,255,0.85);
+            /* Layer System — azul marino profundo */
+            --f-base:        #0D1B2E;   /* fondo principal */
+            --f-surface:     #112240;   /* cards / paneles */
+            --f-surface-alt: #0A1628;   /* sidebar */
+            --f-overlay:     rgba(17,34,64,0.95);
 
             /* Stroke */
-            --f-stroke:      rgba(0,0,0,0.08);
-            --f-stroke-card: rgba(0,0,0,0.06);
-            --f-stroke-focus: #0067C0;
+            --f-stroke:      rgba(201,168,76,0.20);
+            --f-stroke-card: rgba(201,168,76,0.12);
+            --f-stroke-focus: #C9A84C;
 
-            /* Accent — Windows 11 default blue */
-            --accent:        #0067C0;
-            --accent-light:  rgba(0,103,192,0.10);
-            --accent-hover:  #0078D4;
-            --accent-press:  #005BA1;
+            /* Accent — dorado JGP */
+            --accent:        #C9A84C;
+            --accent-light:  rgba(201,168,76,0.15);
+            --accent-hover:  #DDB95A;
+            --accent-press:  #B0913E;
 
             /* Text */
-            --text-primary:  #1B1B1B;
-            --text-secondary:#616161;
-            --text-disabled: #ABABAB;
+            --text-primary:  #E8F1FF;
+            --text-secondary:#8BAFD4;
+            --text-disabled: #4A6080;
 
             /* Status */
-            --status-success: #107C10;
-            --status-warn:    #9D5D00;
-            --status-error:   #C42B1C;
+            --status-success: #22C55E;
+            --status-warn:    #F59E0B;
+            --status-error:   #EF4444;
 
             /* Control surfaces */
-            --ctrl-bg:        rgba(255,255,255,0.70);
-            --ctrl-bg-hover:  rgba(249,249,249,1);
-            --ctrl-bg-press:  rgba(243,243,243,1);
-            --ctrl-secondary: rgba(0,0,0,0.04);
-            --ctrl-secondary-hover: rgba(0,0,0,0.08);
+            --ctrl-bg:        rgba(201,168,76,0.08);
+            --ctrl-bg-hover:  rgba(201,168,76,0.16);
+            --ctrl-bg-press:  rgba(201,168,76,0.22);
+            --ctrl-secondary: rgba(255,255,255,0.05);
+            --ctrl-secondary-hover: rgba(255,255,255,0.10);
 
             /* Radius */
-            --r-card:   8px;
-            --r-control:6px;
-            --r-input:  4px;
+            --r-card:   10px;
+            --r-control:7px;
+            --r-input:  6px;
             --r-pill:   20px;
 
-            /* Sombras Fluent */
-            --shadow-card:  0 2px 4px rgba(0,0,0,0.04), 0 8px 20px rgba(0,0,0,0.06);
-            --shadow-modal: 0 8px 32px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.08);
-            --shadow-float: 0 16px 48px rgba(0,0,0,0.18);
+            /* Sombras */
+            --shadow-card:  0 2px 8px rgba(0,0,0,0.30), 0 0 0 1px rgba(30,144,255,0.08);
+            --shadow-modal: 0 8px 40px rgba(0,0,0,0.50), 0 0 0 1px rgba(30,144,255,0.12);
+            --shadow-float: 0 20px 60px rgba(0,0,0,0.60);
 
             /* Aliases de compatibilidad con HTML existente */
             --bg-dark:           var(--f-base);
@@ -80,27 +80,27 @@
             --radius-md:         var(--r-control);
             --btn-secondary:     var(--ctrl-secondary);
             --btn-secondary-hover: var(--ctrl-secondary-hover);
-            --status-active-bg:  var(--accent-light);
-            --status-proceso-bg: rgba(157,93,0,0.10);
-            --status-cerrado-bg: rgba(196,43,28,0.10);
+            --status-active-bg:  rgba(34,197,94,0.12);
+            --status-proceso-bg: rgba(245,158,11,0.12);
+            --status-cerrado-bg: rgba(239,68,68,0.12);
         }
 
-        /* ── Dark Mode ───────────────────────────────────────────── */
+        /* ── Dark Mode = misma paleta (ya es oscura por defecto) ─── */
         [data-theme="dark"] {
-            --f-base:        #202020;
-            --f-surface:     #2C2C2C;
-            --f-surface-alt: #252525;
-            --f-overlay:     rgba(44,44,44,0.90);
-            --f-stroke:      rgba(255,255,255,0.08);
-            --f-stroke-card: rgba(255,255,255,0.06);
-            --text-primary:  #FFFFFF;
-            --text-secondary:#9D9D9D;
-            --accent:        #4CC2FF;
-            --accent-light:  rgba(76,194,255,0.12);
-            --accent-hover:  #6CD1FF;
-            --ctrl-bg:        rgba(255,255,255,0.06);
-            --ctrl-bg-hover:  rgba(255,255,255,0.10);
-            --ctrl-secondary: rgba(255,255,255,0.06);
+            --f-base:        #0D1B2E;
+            --f-surface:     #112240;
+            --f-surface-alt: #0A1628;
+            --f-overlay:     rgba(17,34,64,0.95);
+            --f-stroke:      rgba(201,168,76,0.20);
+            --f-stroke-card: rgba(201,168,76,0.12);
+            --text-primary:  #E8F1FF;
+            --text-secondary:#8BAFD4;
+            --accent:        #C9A84C;
+            --accent-light:  rgba(201,168,76,0.15);
+            --accent-hover:  #DDB95A;
+            --ctrl-bg:        rgba(201,168,76,0.08);
+            --ctrl-bg-hover:  rgba(201,168,76,0.16);
+            --ctrl-secondary: rgba(255,255,255,0.05);
             --ctrl-secondary-hover: rgba(255,255,255,0.10);
             --bg-dark:  var(--f-base);
             --bg-panel: var(--f-surface);

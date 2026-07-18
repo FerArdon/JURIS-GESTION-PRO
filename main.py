@@ -462,6 +462,12 @@ class JurisAPI:
             logging.error(f"Error al actualizar exequatur: {e}")
             return str(e)
 
+    def abrir_url(self, url):
+        """Abre una URL en el navegador predeterminado del sistema."""
+        import webbrowser
+        webbrowser.open(url)
+        return True
+
     def guardar_configuracion(self, nombre, lema, pin=None, exequatur=None, tomo=None, folio_ini=None, limite=None, api_key=None):
         """Guarda la identidad institucional, metadatos de auditoría y PIN de seguridad."""
         try:
@@ -728,7 +734,19 @@ class JurisAPI:
 
     def cargar_plantilla(self, ruta_relativa, id_expediente):
         """Carga el texto de la plantilla e inyecta los datos del cliente/caso activo."""
-        plantilla_path = os.path.join(BASE_DIR, 'plantillas', ruta_relativa)
+        def _find_plantillas_base():
+            for base in [BASE_DIR,
+                         getattr(sys, '_MEIPASS', None),
+                         os.path.dirname(sys.executable)]:
+                if base:
+                    p = os.path.join(base, 'plantillas')
+                    if os.path.exists(p):
+                        return p
+            return None
+        plantillas_base = _find_plantillas_base()
+        if not plantillas_base:
+            return "Error: Carpeta de plantillas no encontrada."
+        plantilla_path = os.path.join(plantillas_base, ruta_relativa)
         if not os.path.exists(plantilla_path):
             return "Error: Plantilla no encontrada."
 
