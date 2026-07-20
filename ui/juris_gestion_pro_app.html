@@ -1011,6 +1011,8 @@
                     </div>
                 </div>
 
+                <div id="banner-audiencias-proximas" style="display:none; margin-bottom:16px;"></div>
+
                 <div class="stats-grid">
                     <div class="stat-card" style="border-top: 4px solid var(--accent-green);">
                         <div class="stat-value" id="dash-activos">0</div>
@@ -2276,6 +2278,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
             getClientes()          { return this._call('get_clientes',          () => window.pywebview.api.get_clientes()); },
             getCasos(estado)       { return this._call('get_casos',             () => window.pywebview.api.get_casos(estado)); },
             getAudiencias()        { return this._call('get_audiencias',        () => window.pywebview.api.get_audiencias()); },
+            getAudienciasProximas(h){ return this._call('get_audiencias_proximas', () => window.pywebview.api.get_audiencias_proximas(h)); },
             getConfiguracion()     { return this._call('get_configuracion',     () => window.pywebview.api.get_configuracion()); },
             getResumenCasos()      { return this._call('get_resumen_casos',     () => window.pywebview.api.get_resumen_casos()); },
             getProtocolo()         { return this._call('get_protocolo',         () => window.pywebview.api.get_protocolo()); },
@@ -2881,6 +2884,10 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     document.getElementById('badge-proceso-tab').innerText = proceso;
                     document.getElementById('badge-cerrados-tab').innerText = cerrados;
 
+                    // Aviso de audiencias proximas (proximas 48 horas)
+                    const proximasAud = await JGP.API.getAudienciasProximas(48);
+                    renderBannerAudiencias(proximasAud);
+
                     // Actualizar Gráfico Chart.js (guard: la librería puede no estar disponible)
                     const canvasChart = document.getElementById('chart-casos');
                     if (canvasChart && typeof Chart !== 'undefined') {
@@ -2950,6 +2957,26 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     console.error("Error en actualizarDashboard:", e);
                 }
             }
+        }
+
+        function renderBannerAudiencias(proximas) {
+            const banner = document.getElementById('banner-audiencias-proximas');
+            if (!banner) return;
+            if (!proximas || proximas.length === 0) {
+                banner.style.display = 'none';
+                banner.innerHTML = '';
+                return;
+            }
+            const filas = proximas.map(a =>
+                `<div style="padding:4px 0;">📌 <strong>${a.fecha_hora}</strong> — ${a.tipo_audiencia} · ${a.cliente_nombre} <span style="color:var(--text-muted, #888);">(${a.id_expediente})</span></div>`
+            ).join('');
+            banner.innerHTML = `
+                <div style="background:#FFF4E5; border:1px solid #f59e0b; border-radius:10px; padding:14px 18px; position:relative;">
+                    <button onclick="document.getElementById('banner-audiencias-proximas').style.display='none';" style="position:absolute; top:8px; right:10px; background:none; border:none; font-size:1.1rem; cursor:pointer; color:#8a5a00;">&times;</button>
+                    <div style="font-weight:700; color:#8a5a00; margin-bottom:6px;">⚖️ ${proximas.length === 1 ? 'Tienes 1 audiencia próxima' : `Tienes ${proximas.length} audiencias próximas`} (en las próximas 48 horas)</div>
+                    <div style="color:#8a5a00; font-size:0.92rem;">${filas}</div>
+                </div>`;
+            banner.style.display = 'block';
         }
 
         function editarMetaMensual() {
