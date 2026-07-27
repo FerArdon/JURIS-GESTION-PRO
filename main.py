@@ -5,6 +5,7 @@ import base64
 import shutil
 import sqlite3
 import logging
+import datetime
 import webview
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -724,6 +725,51 @@ class JurisAPI:
             logging.error(f"Error al leer audiencias: {e}")
             return []
 
+    def get_audiencias_proximas(self, horas=48):
+        """Devuelve las audiencias programadas dentro de las proximas `horas` horas."""
+        try:
+            ahora = datetime.datetime.now()
+            limite = ahora + datetime.timedelta(hours=horas)
+            proximas = []
+            for a in self.get_audiencias():
+                fh_raw = (a.get('fecha_hora') or '').replace('T', ' ')
+                try:
+                    fh = datetime.datetime.strptime(fh_raw[:16], '%Y-%m-%d %H:%M')
+                except ValueError:
+                    continue
+                if ahora <= fh <= limite:
+                    proximas.append(a)
+            return proximas
+        except Exception as e:
+            logging.error(f"Error al calcular audiencias proximas: {e}")
+            return []
+
+    def notificar_audiencias_proximas(self):
+        """Envia una notificacion nativa de Windows si hay audiencias en las
+        proximas 48 horas. Se llama una vez al iniciar la aplicacion."""
+        try:
+            proximas = self.get_audiencias_proximas(48)
+            if not proximas:
+                return
+            if len(proximas) == 1:
+                a = proximas[0]
+                titulo = "⚖️ Audiencia próxima"
+                mensaje = f"{a['tipo_audiencia']} — {a['cliente_nombre']}\n{a['fecha_hora']}"
+            else:
+                titulo = f"⚖️ {len(proximas)} audiencias próximas"
+                mensaje = "\n".join(
+                    f"{a['fecha_hora']} — {a['cliente_nombre']}" for a in proximas[:4]
+                )
+            from plyer import notification
+            notification.notify(
+                title=titulo,
+                message=mensaje,
+                app_name="JURIS-GESTIÓN-PRO",
+                timeout=12,
+            )
+        except Exception as e:
+            logging.error(f"Error al notificar audiencias próximas: {e}")
+
     def get_lista_plantillas(self):
         """Escanea la carpeta de plantillas y devuelve una lista para el UI."""
         plantillas = []
@@ -1324,4 +1370,12 @@ if __name__ == '__main__':
     )
 
     ventana.events.closed += al_cerrar
-    webview.start(debug=False)
+
+    def _al_iniciar(api_ref):
+        """Se ejecuta una vez que la ventana ya cargo; dispara la notificacion
+        de Windows si hay audiencias en las proximas 48 horas."""
+        import time
+        time.sleep(3)
+        api_ref.notificar_audiencias_proximas()
+
+    webview.start(_al_iniciar, args=(api,), debug=False)

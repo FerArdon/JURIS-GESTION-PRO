@@ -35,9 +35,9 @@ data/*.db
 data/*.db-journal
 backups/*.jgpbackup
 installer/*.exe
-*.spec
-*.iss
-*.bat
+installer/Output/
+# .spec / .iss / .bat SI se versionan (son configuracion de build hecha
+# a mano, no generados): ver commit "fix: respaldar configuracion de build"
 
 # Large Media
 *.mp4
