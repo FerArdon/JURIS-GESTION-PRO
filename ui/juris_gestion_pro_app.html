@@ -2894,6 +2894,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     if (dt) { const t = dt.querySelector('.jgp-date-text'); if(t) t.textContent='dd-mm-aaaa'; dt.classList.remove('filled'); }
                     window.pywebview.api.get_audiencias().then(renderAudiencias);
                     actualizarDashboard();
+                    window.pywebview.api.notificar_audiencias_proximas();
                     alert('✅ Audiencia programada y cuantía registrada correctamente.');
                 } else {
                     alert('Error: ' + res);
@@ -3469,6 +3470,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     document.getElementById('modal-editar-audiencia').style.display = 'none';
                     window.pywebview.api.get_audiencias().then(renderAudiencias);
                     actualizarDashboard();
+                    window.pywebview.api.notificar_audiencias_proximas();
                     alert('✅ Audiencia actualizada.');
                 } else { alert('Error: ' + res); }
             });
