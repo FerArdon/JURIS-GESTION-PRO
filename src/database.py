@@ -39,9 +39,11 @@ def inicializar_db():
     os.makedirs(DATA_DIR, exist_ok=True)
 
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = sqlite3.connect(DB_PATH, timeout=15)
+        conn.execute("PRAGMA journal_mode = WAL")
+        conn.execute("PRAGMA busy_timeout = 15000")
         cursor = conn.cursor()
-        
+
         # 1. Tabla de Configuración Institucional (Marca Blanca y Auditoría)
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS configuracion (

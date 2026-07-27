@@ -232,9 +232,11 @@ class LicenciaAPI:
 
 def _get_db_connection():
     """Abre una conexión SQLite con row_factory configurado."""
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=15)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
+    conn.execute("PRAGMA journal_mode = WAL")
+    conn.execute("PRAGMA busy_timeout = 15000")
     return conn
 
 
@@ -555,6 +557,14 @@ class JurisAPI:
         try:
             conn = _get_db_connection()
             cursor = conn.cursor()
+            # Borrado en cascada: actuaciones -> expedientes -> protocolo -> cliente
+            cursor.execute('''
+                DELETE FROM actuaciones WHERE id_expediente IN (
+                    SELECT id_expediente FROM expedientes WHERE id_cliente=?
+                )
+            ''', (id_cliente,))
+            cursor.execute("DELETE FROM expedientes WHERE id_cliente=?", (id_cliente,))
+            cursor.execute("DELETE FROM protocolo WHERE id_cliente=?", (id_cliente,))
             cursor.execute("DELETE FROM clientes WHERE id_cliente=?", (id_cliente,))
             conn.commit()
             conn.close()
