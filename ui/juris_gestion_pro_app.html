@@ -3557,6 +3557,8 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                         <td onclick="abrirFichaAudiencia(window.audienciasDataMap['${trId}'])" style="cursor:pointer; font-size:0.88rem;">${a.observaciones || 'Ninguna'}</td>
                         <td style="text-align:center; white-space:nowrap;">
                             <button class="btn-send" style="background:#38465b; padding:5px 10px; font-size:0.78rem; margin-right:4px;"
+                                onclick="abrirFichaAudiencia(window.audienciasDataMap['${trId}'])">📋 Ver Ficha</button>
+                            <button class="btn-send" style="background:#38465b; padding:5px 10px; font-size:0.78rem; margin-right:4px;"
                                 onclick="abrirEditarAudiencia(window.audienciasDataMap['${trId}'])">&#9998; Editar</button>
                             <button class="btn-send" style="background:var(--danger); padding:5px 10px; font-size:0.78rem;"
                                 onclick="eliminarAudiencia(${a.id_actuacion})">🗑 Eliminar</button>
