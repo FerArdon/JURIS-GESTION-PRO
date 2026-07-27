@@ -660,7 +660,7 @@
         /* ── Dashboard: stat-card y stats-grid (usados en HTML) ── */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
             margin-bottom: 24px;
         }
@@ -883,8 +883,6 @@
     </style>
     
     <!-- Librerías externas localizadas (descargar para uso offline) -->
-    <script src="../assets/js/chart.js"
-            onerror="window._chartLibMissing=true; console.warn('[JGP] chart.js no encontrado. Dashboard sin gráfico.')"></script>
     <script src="../assets/js/html2pdf.bundle.min.js"
             onerror="window._html2pdfLibMissing=true; console.warn('[JGP] html2pdf no encontrado. Export PDF deshabilitado.')"></script>
 
@@ -1029,6 +1027,12 @@
                     <div class="stat-card" style="background: linear-gradient(135deg, var(--bg-panel), var(--accent-dark-green));">
                         <div class="stat-label" style="color:var(--text-main); font-weight:bold;">Honorarios Proyectados</div>
                         <div class="stat-value" style="color:#10b981; font-size: 1.8rem; margin-top:5px;">L. <span id="dash-honorarios">0.00</span></div>
+                        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Casos Activos + En Proceso</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--bg-panel), #1e3a5f);">
+                        <div class="stat-label" style="color:var(--text-main); font-weight:bold;">Honorarios Cobrados</div>
+                        <div class="stat-value" style="color:var(--accent-gold, #d4af37); font-size: 1.8rem; margin-top:5px;">L. <span id="dash-honorarios-cobrados">0.00</span></div>
+                        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Casos Cerrados</div>
                     </div>
                 </div>
 
@@ -1036,9 +1040,7 @@
                     <!-- Gráfico Principal -->
                     <div class="stat-card" style="display: flex; flex-direction: column; height: 320px;">
                         <h3 style="margin-top:0; color:var(--text-muted); font-size:1rem; margin-bottom: 15px;">Distribución de Casos por Estado</h3>
-                        <div style="position: relative; flex: 1; width: 100%; height: 100%;">
-                            <canvas id="chart-casos"></canvas>
-                        </div>
+                        <div id="chart-casos-bars" style="position: relative; flex: 1; width: 100%; height: 100%; display:flex; align-items:flex-end; justify-content:space-around; gap:24px; padding:10px 20px;"></div>
                     </div>
                     
                     <!-- Resumen Lateral -->
@@ -1048,15 +1050,22 @@
                             <div id="dash-alerta-protocolo" style="font-size:1.1rem; margin-top:10px; font-weight:bold;">✅ Protocolo OK</div>
                             <p style="font-size:0.85rem; color:var(--text-muted); margin-top:5px;">Instrumentos: <span id="dash-proto-total">0</span> | Folios: <span id="dash-proto-folios">0</span>/200</p>
                         </div>
-                        
+
+                        <div class="stat-card">
+                            <h3 style="margin-top:0; color:var(--text-muted); font-size:1rem;">⏱️ Tiempo Promedio de Resolución</h3>
+                            <div style="font-size:1.5rem; font-weight:bold; color:var(--text-main); margin-top:10px;"><span id="dash-tiempo-resolucion">—</span> días</div>
+                            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:5px;" id="dash-tiempo-resolucion-nota">Aún no hay casos cerrados con fecha registrada.</p>
+                        </div>
+
                         <div class="stat-card" style="flex:1;">
                             <h3 style="margin-top:0; color:var(--text-muted); font-size:1rem; display:flex; justify-content:space-between;">
                                 Metas Mensuales
                                 <span style="cursor:pointer; font-size:0.8rem; color:var(--accent-green);" onclick="editarMetaMensual()">✏️ Editar</span>
                             </h3>
+                            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;" id="meta-mes-actual">—</div>
                             <div style="margin-top:15px;">
                                 <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:5px;">
-                                    <span>Ingresos (L.)</span>
+                                    <span>Ingresos del mes (L.)</span>
                                     <span id="meta-ingresos-text">0 / 50,000</span>
                                 </div>
                                 <div style="width:100%; background:var(--border-color); height:8px; border-radius:4px;">
@@ -1788,17 +1797,21 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                         <li><strong>Casos Activos</strong> — Total de expedientes con estado "Activo".</li>
                         <li><strong>En Proceso</strong> — Total de expedientes con estado "En Proceso".</li>
                         <li><strong>Casos Cerrados</strong> — Expedientes finalizados o archivados.</li>
-                        <li><strong>Honorarios Proyectados (L.)</strong> — Suma de todas las cuantías/honorarios registrados en audiencias y expedientes.</li>
+                        <li><strong>Honorarios Proyectados (L.)</strong> — Suma de las cuantías/honorarios de expedientes Activos y En Proceso (ingreso esperado, aún no cerrado).</li>
+                        <li><strong>Honorarios Cobrados (L.)</strong> — Suma de las cuantías/honorarios de expedientes ya Cerrados.</li>
                     </ul>
 
                     <h4>Gráfico de Distribución</h4>
-                    <p>Gráfico de torta (Chart.js) que muestra visualmente la proporción de casos por estado. Se actualiza automáticamente.</p>
+                    <p>Barras que muestran visualmente la cantidad de casos por estado (Activos, En Proceso, Cerrados). Se actualiza automáticamente.</p>
 
                     <h4>Estado del Protocolo</h4>
                     <p>Indica si el libro notarial está dentro del límite de 200 folios. Muestra cuántos instrumentos hay registrados y el último folio utilizado.</p>
 
+                    <h4>Tiempo Promedio de Resolución</h4>
+                    <p>Promedio de días entre la fecha de creación y la fecha de cierre de los expedientes ya cerrados. Solo cuenta expedientes cerrados después de este cambio; los cerrados antes no tienen fecha de cierre registrada y no se incluyen en el promedio.</p>
+
                     <h4>Metas Mensuales</h4>
-                    <p>Barra de progreso que compara los honorarios acumulados contra la meta mensual configurada.</p>
+                    <p>Barra de progreso que compara los honorarios registrados <strong>durante el mes calendario en curso</strong> (indicado arriba de la barra) contra la meta mensual configurada. No incluye meses anteriores.</p>
                     <ul>
                         <li><span class="tut-btn grey">✏️ Editar</span> — Abre un cuadro para modificar la meta mensual de ingresos en Lempiras.</li>
                     </ul>
@@ -2950,6 +2963,25 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
 
         /* chartCasos y metaMensual viven en JGP.State — ver proxies arriba */
 
+        /* Barras simples de "Distribución de Casos por Estado" (sin librerías externas) */
+        function renderChartCasosBars(activos, proceso, cerrados) {
+            const cont = document.getElementById('chart-casos-bars');
+            if (!cont) return;
+            const datos = [
+                { label: 'Activos', valor: activos, color: '#0067c0' },
+                { label: 'En Proceso', valor: proceso, color: '#f59e0b' },
+                { label: 'Cerrados', valor: cerrados, color: '#d13438' }
+            ];
+            const max = Math.max(1, activos, proceso, cerrados);
+            cont.innerHTML = datos.map(d => `
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; flex:1;">
+                    <div style="font-weight:bold; color:var(--text-main); margin-bottom:6px;">${d.valor}</div>
+                    <div style="width:56px; border-radius:6px 6px 0 0; background:${d.color}; height:${Math.max(4, (d.valor / max) * 100)}%; transition:height 0.3s ease;"></div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;">${d.label}</div>
+                </div>
+            `).join('');
+        }
+
         async function actualizarDashboard() {
             if(window.pywebview) {
                 try {
@@ -2971,52 +3003,28 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     const proximasAud = await JGP.API.getAudienciasProximas(48);
                     renderBannerAudiencias(proximasAud);
 
-                    // Actualizar Gráfico Chart.js (guard: la librería puede no estar disponible)
-                    const canvasChart = document.getElementById('chart-casos');
-                    if (canvasChart && typeof Chart !== 'undefined') {
-                    const ctx = canvasChart.getContext('2d');
-                    if(chartCasos) {
-                        chartCasos.data.datasets[0].data = [activos, proceso, cerrados];
-                        chartCasos.update();
-                    } else {
-                        chartCasos = new Chart(ctx, {
-                            type: 'bar',
-                            data: {
-                                labels: ['Activos', 'En Proceso', 'Cerrados'],
-                                datasets: [{
-                                    label: 'Cantidad de Expedientes',
-                                    data: [activos, proceso, cerrados],
-                                    backgroundColor: ['#0067c0', '#f59e0b', '#d13438'],
-                                    borderRadius: 6,
-                                    borderWidth: 0
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: { 
-                                    legend: { display: false } 
-                                },
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        ticks: { precision: 0 }
-                                    }
-                                }
-                            }
-                        });
-                    }
-                    } // fin guard Chart.js
+                    // Gráfico de distribución (barras simples en HTML/CSS, sin dependencias externas)
+                    renderChartCasosBars(activos, proceso, cerrados);
 
-                    // Honorarios Proyectados
-                    const total = await window.pywebview.api.get_honorarios_totales();
-                    document.getElementById('dash-honorarios').innerText = total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                    
-                    // Actualizar Meta
-                    let percent = (total / metaMensual) * 100;
+                    // Honorarios: Proyectados (Activos + En Proceso) vs Cobrados (Cerrados)
+                    const honorarios = await window.pywebview.api.get_honorarios_totales();
+                    document.getElementById('dash-honorarios').innerText = honorarios.proyectados.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    document.getElementById('dash-honorarios-cobrados').innerText = honorarios.cobrados.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+                    // Metas Mensuales: solo lo efectivamente registrado EN EL MES actual
+                    const ingresosMes = await window.pywebview.api.get_ingresos_mes_actual();
+                    document.getElementById('meta-mes-actual').innerText = `Mes en curso: ${ingresosMes.mes_nombre}`;
+                    let percent = (ingresosMes.total / metaMensual) * 100;
                     if(percent > 100) percent = 100;
                     document.getElementById('meta-ingresos-bar').style.width = percent + '%';
-                    document.getElementById('meta-ingresos-text').innerText = `${total.toLocaleString('en-US')} / ${metaMensual.toLocaleString('en-US')}`;
+                    document.getElementById('meta-ingresos-text').innerText = `${ingresosMes.total.toLocaleString('en-US')} / ${metaMensual.toLocaleString('en-US')}`;
+
+                    // Tiempo promedio de resolución de casos cerrados
+                    const tiempoRes = await window.pywebview.api.get_tiempo_promedio_resolucion();
+                    document.getElementById('dash-tiempo-resolucion').innerText = tiempoRes.casos_con_dato > 0 ? tiempoRes.promedio_dias : '—';
+                    document.getElementById('dash-tiempo-resolucion-nota').innerText = tiempoRes.casos_con_dato > 0
+                        ? `Basado en ${tiempoRes.casos_con_dato} caso(s) cerrado(s) con fecha registrada.`
+                        : 'Aún no hay casos cerrados con fecha registrada.';
 
                     // Protocolo Stats
                     const protocolo = await window.pywebview.api.get_protocolo();
@@ -3075,12 +3083,16 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
             const proceso = document.getElementById('dash-proceso').innerText;
             const cerrados = document.getElementById('dash-cerrados').innerText;
             const honorarios = document.getElementById('dash-honorarios').innerText.replace(/,/g, '');
-            
+            const cobrados = document.getElementById('dash-honorarios-cobrados').innerText.replace(/,/g, '');
+            const tiempoRes = document.getElementById('dash-tiempo-resolucion').innerText;
+
             let csvContent = "data:text/csv;charset=utf-8,Metrica,Valor\n";
             csvContent += `Casos Activos,${activos}\n`;
             csvContent += `Casos En Proceso,${proceso}\n`;
             csvContent += `Casos Cerrados,${cerrados}\n`;
             csvContent += `Honorarios Proyectados (L.),${honorarios}\n`;
+            csvContent += `Honorarios Cobrados (L.),${cobrados}\n`;
+            csvContent += `Tiempo Promedio de Resolución (días),${tiempoRes}\n`;
 
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");

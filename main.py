@@ -973,10 +973,19 @@ class JurisAPI:
             return f"Estado inválido. Use: {', '.join(estados_validos)}"
         try:
             conn = _get_db_connection()
-            cursor = conn.execute(
-                "UPDATE expedientes SET estado = ? WHERE id_expediente = ?",
-                (nuevo_estado, id_expediente)
-            )
+            if nuevo_estado == 'Cerrado':
+                # Registrar fecha de cierre solo si aun no la tenia (evita
+                # sobrescribirla si se reabre y se vuelve a cerrar despues).
+                cursor = conn.execute(
+                    "UPDATE expedientes SET estado = ?, fecha_cierre = COALESCE(fecha_cierre, DATE('now')) WHERE id_expediente = ?",
+                    (nuevo_estado, id_expediente)
+                )
+            else:
+                # Si se reabre un caso, limpiar la fecha de cierre anterior.
+                cursor = conn.execute(
+                    "UPDATE expedientes SET estado = ?, fecha_cierre = NULL WHERE id_expediente = ?",
+                    (nuevo_estado, id_expediente)
+                )
             if cursor.rowcount == 0:
                 conn.close()
                 return f"No se encontró el expediente '{id_expediente}'."
@@ -1070,16 +1079,78 @@ class JurisAPI:
             return str(e)
 
     def get_honorarios_totales(self):
+        """Separa los honorarios en Proyectados (casos Activos/En Proceso, aun
+        no cerrados) y Cobrados (casos ya Cerrados)."""
         try:
             conn = _get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT SUM(monto_involucrado) FROM actuaciones")
-            total = cursor.fetchone()[0]
+            cursor.execute('''
+                SELECT COALESCE(SUM(a.monto_involucrado), 0)
+                FROM actuaciones a
+                JOIN expedientes e ON a.id_expediente = e.id_expediente
+                WHERE e.estado IN ('Activo', 'En Proceso')
+            ''')
+            proyectados = cursor.fetchone()[0] or 0.0
+            cursor.execute('''
+                SELECT COALESCE(SUM(a.monto_involucrado), 0)
+                FROM actuaciones a
+                JOIN expedientes e ON a.id_expediente = e.id_expediente
+                WHERE e.estado = 'Cerrado'
+            ''')
+            cobrados = cursor.fetchone()[0] or 0.0
             conn.close()
-            return total if total else 0.0
+            return {'proyectados': proyectados, 'cobrados': cobrados}
         except Exception as e:
             logging.error(f"Error al calcular honorarios: {e}")
-            return 0.0
+            return {'proyectados': 0.0, 'cobrados': 0.0}
+
+    def get_ingresos_mes_actual(self):
+        """Suma los honorarios registrados (fecha_hora de la actuacion) dentro
+        del mes calendario actual, para la barra de Metas Mensuales."""
+        meses = ['enero','febrero','marzo','abril','mayo','junio','julio',
+                 'agosto','septiembre','octubre','noviembre','diciembre']
+        try:
+            ahora = datetime.datetime.now()
+            mes_actual = ahora.strftime('%Y-%m')
+            conn = _get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT COALESCE(SUM(monto_involucrado), 0)
+                FROM actuaciones
+                WHERE substr(fecha_hora, 1, 7) = ?
+            ''', (mes_actual,))
+            total = cursor.fetchone()[0] or 0.0
+            conn.close()
+            return {
+                'total': total,
+                'mes_nombre': f"{meses[ahora.month - 1].capitalize()} {ahora.year}"
+            }
+        except Exception as e:
+            logging.error(f"Error al calcular ingresos del mes: {e}")
+            return {'total': 0.0, 'mes_nombre': ''}
+
+    def get_tiempo_promedio_resolucion(self):
+        """Promedio de dias entre fecha_creacion y fecha_cierre de los
+        expedientes que ya tienen ambas fechas registradas."""
+        try:
+            conn = _get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT AVG(julianday(fecha_cierre) - julianday(fecha_creacion))
+                FROM expedientes
+                WHERE estado = 'Cerrado' AND fecha_cierre IS NOT NULL
+            ''')
+            promedio = cursor.fetchone()[0]
+            cursor.execute('''
+                SELECT COUNT(*) FROM expedientes
+                WHERE estado = 'Cerrado' AND fecha_cierre IS NOT NULL
+            ''')
+            n = cursor.fetchone()[0] or 0
+            conn.close()
+            return {'promedio_dias': round(promedio) if promedio else 0, 'casos_con_dato': n}
+        except Exception as e:
+            logging.error(f"Error al calcular tiempo promedio de resolucion: {e}")
+            return {'promedio_dias': 0, 'casos_con_dato': 0}
 
     def get_protocolo(self):
         try:
