@@ -2894,7 +2894,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     if (dt) { const t = dt.querySelector('.jgp-date-text'); if(t) t.textContent='dd-mm-aaaa'; dt.classList.remove('filled'); }
                     window.pywebview.api.get_audiencias().then(renderAudiencias);
                     actualizarDashboard();
-                    window.pywebview.api.notificar_audiencias_proximas();
+                    chequearAudienciasProximas();
                     alert('✅ Audiencia programada y cuantía registrada correctamente.');
                 } else {
                     alert('Error: ' + res);
@@ -3069,6 +3069,41 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     <div style="color:#8a5a00; font-size:0.92rem;">${filas}</div>
                 </div>`;
             banner.style.display = 'block';
+        }
+
+        /* ── Chequeo periódico de audiencias próximas ────────────────────
+           Revisa cada 60s si hay audiencias dentro de las próximas 48h,
+           refresca el banner y dispara un toast nativo SOLO para las que
+           no se hayan notificado antes en esta sesión (evita spam repetido
+           de la misma audiencia en cada ciclo). La primera corrida (al
+           iniciar la app) solo marca lo existente como "visto", sin toast,
+           porque Python ya envía un aviso combinado al arrancar. */
+        window._audienciasNotificadas = window._audienciasNotificadas || new Set();
+        let _primeraCorridaChequeo = true;
+
+        async function chequearAudienciasProximas() {
+            if (!window.pywebview) return;
+            try {
+                const proximas = await JGP.API.getAudienciasProximas(48);
+                renderBannerAudiencias(proximas);
+                (proximas || []).forEach(a => {
+                    const key = a.id_actuacion;
+                    if (!window._audienciasNotificadas.has(key)) {
+                        window._audienciasNotificadas.add(key);
+                        if (!_primeraCorridaChequeo) {
+                            window.pywebview.api.notificar_audiencia_toast(a.tipo_audiencia, a.cliente_nombre, a.fecha_hora);
+                        }
+                    }
+                });
+                _primeraCorridaChequeo = false;
+            } catch (e) {
+                console.error('Error en chequeo periódico de audiencias:', e);
+            }
+        }
+
+        function iniciarChequeoAudienciasPeriodico() {
+            if (window._audienciasCheckInterval) return;
+            window._audienciasCheckInterval = setInterval(chequearAudienciasProximas, 60000);
         }
 
         function editarMetaMensual() {
@@ -3470,7 +3505,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     document.getElementById('modal-editar-audiencia').style.display = 'none';
                     window.pywebview.api.get_audiencias().then(renderAudiencias);
                     actualizarDashboard();
-                    window.pywebview.api.notificar_audiencias_proximas();
+                    chequearAudienciasProximas();
                     alert('✅ Audiencia actualizada.');
                 } else { alert('Error: ' + res); }
             });
@@ -4022,6 +4057,10 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                             }
                         }),
                     ]);
+
+                    /* Chequeo periódico de audiencias próximas (cada 60s) */
+                    await chequearAudienciasProximas();
+                    iniciarChequeoAudienciasPeriodico();
 
                     /* Restaurar preferencias de tema desde localStorage */
                     const modoGuardado = localStorage.getItem('temaModo') || 'light';

@@ -770,6 +770,24 @@ class JurisAPI:
         except Exception as e:
             logging.error(f"Error al notificar audiencias próximas: {e}")
 
+    def notificar_audiencia_toast(self, tipo_audiencia, cliente_nombre, fecha_hora):
+        """Envia un toast nativo de Windows para UNA audiencia especifica.
+        Usado por el chequeo periodico del frontend para avisar justo cuando
+        una audiencia entra en la ventana de proximidad, sin repetir el aviso
+        para audiencias ya notificadas antes."""
+        try:
+            from plyer import notification
+            notification.notify(
+                title="⚖️ Audiencia próxima",
+                message=f"{tipo_audiencia} — {cliente_nombre}\n{fecha_hora}",
+                app_name="JURIS-GESTIÓN-PRO",
+                timeout=12,
+            )
+            return True
+        except Exception as e:
+            logging.error(f"Error al notificar audiencia especifica: {e}")
+            return False
+
     def get_lista_plantillas(self):
         """Escanea la carpeta de plantillas y devuelve una lista para el UI."""
         plantillas = []
