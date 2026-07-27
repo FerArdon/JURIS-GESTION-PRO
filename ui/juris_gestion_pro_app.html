@@ -1268,7 +1268,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                             <div class="jgp-date-field" id="aud-fecha-display" onclick="JGP.DatePicker.open('aud-fecha','aud-fecha-display')" tabindex="0">
                                 <span class="jgp-date-text">dd-mm-aaaa</span>
                                 <span class="jgp-time-sep"> </span>
-                                <input class="jgp-time-input" id="aud-hora" type="time" value="08:00" onclick="event.stopPropagation()" tabindex="0">
+                                <input class="jgp-time-input" id="aud-hora" type="time" value="08:00" onclick="event.stopPropagation()" oninput="JGP.DatePicker.updateHora(this)" tabindex="0">
                                 <span class="jgp-cal-icon">📅</span>
                             </div>
                             <input type="hidden" id="aud-fecha">
@@ -1366,8 +1366,10 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                 <div class="modal-content" style="max-width:500px;">
                     <h2 style="color:var(--text-main); margin-bottom:20px; font-size:1.2rem;">Autorizar Nuevo Instrumento</h2>
                     
-                    <label style="color:var(--text-muted); display:block; margin-bottom:5px;">Cliente / Otorgante (Seleccionar ID):</label>
-                    <input type="number" id="proto-cliente" class="ai-input" style="width:100%; margin-bottom:15px;" placeholder="ID del Cliente en CRM (Ej: 1)">
+                    <label style="color:var(--text-muted); display:block; margin-bottom:5px;">Cliente / Otorgante:</label>
+                    <select id="proto-cliente" class="ai-input" style="width:100%; margin-bottom:15px; background:var(--bg-dark); color:var(--text-main);">
+                        <option value="">-- Seleccione el Cliente --</option>
+                    </select>
                     
                     <label style="color:var(--text-muted); display:block; margin-bottom:5px;">Naturaleza del Acto:</label>
                     <input type="text" id="proto-acto" class="ai-input" style="width:100%; margin-bottom:15px;" placeholder="Ej: Escritura de Compraventa">
@@ -1549,7 +1551,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                         <div class="jgp-date-field" id="edit-aud-fecha-display" onclick="JGP.DatePicker.open('edit-aud-fecha','edit-aud-fecha-display')" tabindex="0">
                             <span class="jgp-date-text">dd-mm-aaaa</span>
                             <span class="jgp-time-sep"> </span>
-                            <input class="jgp-time-input" id="edit-aud-hora" type="time" value="08:00" onclick="event.stopPropagation()" tabindex="0">
+                            <input class="jgp-time-input" id="edit-aud-hora" type="time" value="08:00" onclick="event.stopPropagation()" oninput="JGP.DatePicker.updateHora(this)" tabindex="0">
                             <span class="jgp-cal-icon">📅</span>
                         </div>
                         <input type="hidden" id="edit-aud-fecha">
@@ -1957,7 +1959,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     <h4>Botón: + Nuevo Instrumento</h4>
                     <p>Abre el formulario de autorización de nuevo instrumento notarial. Campos:</p>
                     <ul>
-                        <li><span class="tut-field">Cliente / Otorgante (ID)</span> — Número de ID del cliente en el CRM. El sistema vincula el instrumento al cliente registrado.</li>
+                        <li><span class="tut-field">Cliente / Otorgante</span> — Selecciona al cliente de la lista (registrado previamente en el CRM). El sistema vincula el instrumento al cliente elegido.</li>
                         <li><span class="tut-field">Naturaleza del Acto</span> — Tipo de escritura o instrumento. Ejemplo: <em>Escritura de Compraventa</em>, <em>Poder General</em>.</li>
                         <li><span class="tut-field">Cantidad de Folios a Utilizar</span> — Número de folios que ocupará el instrumento. El sistema suma automáticamente al total del tomo.</li>
                     </ul>
@@ -2545,9 +2547,19 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                 if (_panel) _panel.classList.remove('open');
             }
 
+            /* Actualiza la hora en el campo oculto cuando el usuario cambia
+               el input de tiempo DESPUÉS de haber elegido ya una fecha. */
+            function updateHora(horaEl) {
+                const fechaId = horaEl.id.replace('aud-hora', 'aud-fecha').replace('edit-aud-hora', 'edit-aud-fecha');
+                const hidden = document.getElementById(fechaId);
+                if (!hidden || !hidden.value) return;
+                const datePart = hidden.value.split('T')[0];
+                hidden.value = `${datePart}T${horaEl.value}`;
+            }
+
             document.addEventListener('DOMContentLoaded', _init);
 
-            return { open, close };
+            return { open, close, updateHora };
         })();
 
         /* Función global para el onclick del botón HTML */
@@ -3452,6 +3464,13 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
 
         function abrirModalProtocolo() {
             document.getElementById('modal-protocolo').style.display = 'flex';
+            window.pywebview.api.get_clientes().then(clientes => {
+                const select = document.getElementById('proto-cliente');
+                select.innerHTML = '<option value="">-- Seleccione el Cliente --</option>';
+                clientes.forEach(c => {
+                    select.innerHTML += `<option value="${c.id_cliente}">${c.nombre_completo} (${c.dni || c.rtn || 'S/D'})</option>`;
+                });
+            });
         }
 
         function guardarProtocolo() {
@@ -3471,6 +3490,9 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     document.getElementById('proto-acto').value = '';
                     document.getElementById('proto-cant-folios').value = '';
                     alert("✅ Instrumento autorizado y foliado correctamente.");
+                } else if (String(res).includes('FOREIGN KEY')) {
+                    alert("Error: el cliente seleccionado ya no existe en el CRM. Actualiza la lista e intenta de nuevo.");
+                    abrirModalProtocolo();
                 } else {
                     alert("Error: " + res);
                 }
