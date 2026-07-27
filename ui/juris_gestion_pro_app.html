@@ -1093,7 +1093,7 @@
                 <!-- Barra de búsqueda + botones -->
                 <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
                     <input type="text" id="buscador-expedientes" class="ai-input" placeholder="🔍 Buscar por cliente, ID, juzgado, materia..." style="width:380px; max-width:100%; padding:9px 14px; font-size:0.92rem; border:1px solid var(--accent-blue, #0067c0); border-radius:8px;" onkeyup="filtrarExpedientes()">
-                    <button class="btn-send" style="white-space:nowrap; padding:9px 18px;" onclick="cargarClientesEnModal(); document.getElementById('modal-nuevo-expediente').style.display='flex'">+ Nuevo Expediente</button>
+                    <button class="btn-send" style="white-space:nowrap; padding:9px 18px;" onclick="document.getElementById('modal-nuevo-expediente').style.display='flex'">+ Nuevo Expediente</button>
                     <button class="btn-send" style="white-space:nowrap; padding:9px 18px; background:var(--accent-green); color:white;" onclick="abrirEditorDesdeBarraSuperior()">📄 Redactar Escrito</button>
                 </div>
                 <!-- Tabs de estado -->
@@ -1367,9 +1367,10 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     <h2 style="color:var(--text-main); margin-bottom:20px; font-size:1.2rem;">Autorizar Nuevo Instrumento</h2>
                     
                     <label style="color:var(--text-muted); display:block; margin-bottom:5px;">Cliente / Otorgante:</label>
-                    <select id="proto-cliente" class="ai-input" style="width:100%; margin-bottom:15px; background:var(--bg-dark); color:var(--text-main);">
-                        <option value="">-- Seleccione el Cliente --</option>
-                    </select>
+                    <div class="jgp-date-field" id="proto-cliente-display" onclick="abrirSelectorCliente('proto-cliente','proto-cliente-display')" tabindex="0" style="margin-bottom:15px;">
+                        <span class="jgp-date-text">🔍 -- Seleccione el Cliente --</span>
+                    </div>
+                    <input type="hidden" id="proto-cliente">
                     
                     <label style="color:var(--text-muted); display:block; margin-bottom:5px;">Naturaleza del Acto:</label>
                     <input type="text" id="proto-acto" class="ai-input" style="width:100%; margin-bottom:15px;" placeholder="Ej: Escritura de Compraventa">
@@ -1394,6 +1395,18 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     <input type="text" id="buscador-selector-caso" class="ai-input" placeholder="🔍 Filtrar expedientes..." style="width:100%; margin-bottom:12px; padding:8px 12px;" oninput="filtrarSelectorCaso()">
                     <div id="lista-selector-casos" style="max-height:320px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
                     <p style="color:var(--text-muted); font-size:0.82rem; margin-top:14px; text-align:center;">También puedes hacer clic directamente sobre una fila de la tabla y luego usar "Redactar Documento".</p>
+                </div>
+            </div>
+
+            <!-- Modal Selector de Cliente (buscable, reutilizable) -->
+            <div id="modal-selector-cliente" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); align-items:center; justify-content:center; z-index:1030;">
+                <div class="modal-content" style="max-width:480px; width:90%;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+                        <h3 style="color:var(--text-main); margin:0;">👤 Selecciona el Cliente</h3>
+                        <button onclick="document.getElementById('modal-selector-cliente').style.display='none'" style="background:none; border:none; color:var(--text-muted); font-size:1.4rem; cursor:pointer;">&times;</button>
+                    </div>
+                    <input type="text" id="buscador-selector-cliente" class="ai-input" placeholder="🔍 Buscar por nombre o DNI/RTN..." style="width:100%; margin-bottom:12px; padding:8px 12px;" oninput="filtrarSelectorCliente()">
+                    <div id="lista-selector-clientes" style="max-height:320px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
                 </div>
             </div>
 
@@ -1423,9 +1436,10 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     </div>
 
                     <label style="color:var(--text-muted); display:block; margin-bottom:5px;">Cliente *</label>
-                    <select id="exp-cliente" class="ai-input" style="width:100%; margin-bottom:15px; background:var(--bg-dark); color:var(--text-main);">
-                        <option value="">-- Seleccione el Cliente --</option>
-                    </select>
+                    <div class="jgp-date-field" id="exp-cliente-display" onclick="abrirSelectorCliente('exp-cliente','exp-cliente-display')" tabindex="0" style="margin-bottom:15px;">
+                        <span class="jgp-date-text">🔍 -- Seleccione el Cliente --</span>
+                    </div>
+                    <input type="hidden" id="exp-cliente">
 
                     <label style="color:var(--text-muted); display:block; margin-bottom:5px;">Juzgado</label>
                     <input type="text" id="exp-juzgado" class="ai-input" style="width:100%; margin-bottom:15px;" placeholder="Ej: Juzgado de Letras Civil de Tegucigalpa">
@@ -1868,7 +1882,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     <ul>
                         <li><span class="tut-field">Materia Legal *</span> — Selector desplegable. Al elegir la materia, el ID del expediente se genera automáticamente. Opciones: Civil, Penal, Laboral, Familia, Mercantil y Empresarial, Administrativo, Agrario, Constitucional, Notarial.</li>
                         <li><span class="tut-field">ID del Expediente (Auto-generado) 🔒</span> — Campo de solo lectura. El sistema genera el ID automáticamente con el formato <code>AÑO-COD-NÚM</code> (ejemplo: <code>2026-CIV-003</code>). El número es secuencial por materia. No se puede editar manualmente.</li>
-                        <li><span class="tut-field">Cliente *</span> — Selector desplegable con todos los clientes registrados en el CRM. Muestra nombre y DNI para identificación segura. Obligatorio.</li>
+                        <li><span class="tut-field">Cliente *</span> — Haz clic para abrir el buscador de clientes registrados en el CRM. Filtra por nombre o DNI/RTN para identificación segura. Obligatorio.</li>
                         <li><span class="tut-field">Juzgado</span> — Nombre del juzgado o tribunal competente. Ejemplo: <em>Juzgado de Letras Civil de Tegucigalpa</em>. Opcional.</li>
                         <li><span class="tut-field">Cuantía / Honorarios Pactados (L.)</span> — Monto en Lempiras de los honorarios acordados. Se suma a los "Honorarios Proyectados" del Dashboard. Opcional.</li>
                     </ul>
@@ -2723,6 +2737,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     document.getElementById('modal-nuevo-expediente').style.display = 'none';
                     document.getElementById('exp-id').value = '';
                     document.getElementById('exp-cliente').value = '';
+                    resetSelectorClienteDisplay('exp-cliente-display');
                     document.getElementById('exp-materia').value = '';
                     document.getElementById('exp-juzgado').value = '';
                     document.getElementById('exp-cuantia').value = '';
@@ -2744,14 +2759,70 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
             });
         }
 
-        function cargarClientesEnModal() {
+        /* ── Selector de Cliente buscable (reutilizable en toda la app) ── */
+        let _clienteSelectorTarget = { hiddenId: null, displayId: null };
+
+        function abrirSelectorCliente(hiddenId, displayId) {
+            _clienteSelectorTarget = { hiddenId, displayId };
+            const modal = document.getElementById('modal-selector-cliente');
+            const lista = document.getElementById('lista-selector-clientes');
+            lista.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:20px;">Cargando clientes...</div>';
+            document.getElementById('buscador-selector-cliente').value = '';
+            modal.style.display = 'flex';
             window.pywebview.api.get_clientes().then(clientes => {
-                const select = document.getElementById('exp-cliente');
-                select.innerHTML = '<option value="">-- Seleccione el Cliente --</option>';
-                clientes.forEach(c => {
-                    select.innerHTML += `<option value="${c.id_cliente}">${c.nombre_completo} (${c.dni || c.rtn || 'S/D'})</option>`;
-                });
+                window._todosClientes = clientes || [];
+                renderSelectorClientes(window._todosClientes);
             });
+        }
+
+        function renderSelectorClientes(clientes) {
+            const lista = document.getElementById('lista-selector-clientes');
+            if (!clientes.length) {
+                lista.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:20px;">No hay clientes registrados.</div>';
+                return;
+            }
+            lista.innerHTML = clientes.map(c => `
+                <div onclick="seleccionarClienteEnSelector(${c.id_cliente}, '${(c.nombre_completo||'').replace(/'/g,"&apos;")}', '${(c.dni||c.rtn||'S/D').replace(/'/g,"&apos;")}')"
+                     style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px;
+                            background:var(--bg-dark); border:1px solid var(--border-color); border-radius:8px;
+                            cursor:pointer; transition:background 0.15s;"
+                     onmouseover="this.style.background='rgba(0,103,192,0.15)'"
+                     onmouseout="this.style.background='var(--bg-dark)'">
+                    <div style="font-weight:bold; color:var(--text-main); font-size:0.95rem;">${c.nombre_completo}</div>
+                    <span style="color:var(--text-muted); font-size:0.82rem;">${c.dni || c.rtn || 'S/D'}</span>
+                </div>
+            `).join('');
+        }
+
+        function filtrarSelectorCliente() {
+            const q = document.getElementById('buscador-selector-cliente').value.toLowerCase();
+            const filtrados = (window._todosClientes || []).filter(c =>
+                (c.nombre_completo||'').toLowerCase().includes(q) ||
+                (c.dni||'').toLowerCase().includes(q) ||
+                (c.rtn||'').toLowerCase().includes(q)
+            );
+            renderSelectorClientes(filtrados);
+        }
+
+        function seleccionarClienteEnSelector(id, nombre, doc) {
+            const { hiddenId, displayId } = _clienteSelectorTarget;
+            const hidden = document.getElementById(hiddenId);
+            if (hidden) hidden.value = id;
+            const display = document.getElementById(displayId);
+            if (display) {
+                const span = display.querySelector('.jgp-date-text');
+                if (span) span.textContent = `${nombre} (${doc})`;
+                display.classList.add('filled');
+            }
+            document.getElementById('modal-selector-cliente').style.display = 'none';
+        }
+
+        function resetSelectorClienteDisplay(displayId) {
+            const display = document.getElementById(displayId);
+            if (!display) return;
+            const span = display.querySelector('.jgp-date-text');
+            if (span) span.textContent = '🔍 -- Seleccione el Cliente --';
+            display.classList.remove('filled');
         }
 
         function guardarNuevoCliente() {
@@ -3464,13 +3535,6 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
 
         function abrirModalProtocolo() {
             document.getElementById('modal-protocolo').style.display = 'flex';
-            window.pywebview.api.get_clientes().then(clientes => {
-                const select = document.getElementById('proto-cliente');
-                select.innerHTML = '<option value="">-- Seleccione el Cliente --</option>';
-                clientes.forEach(c => {
-                    select.innerHTML += `<option value="${c.id_cliente}">${c.nombre_completo} (${c.dni || c.rtn || 'S/D'})</option>`;
-                });
-            });
         }
 
         function guardarProtocolo() {
@@ -3487,6 +3551,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     document.getElementById('modal-protocolo').style.display = 'none';
                     cargarProtocolo();
                     document.getElementById('proto-cliente').value = '';
+                    resetSelectorClienteDisplay('proto-cliente-display');
                     document.getElementById('proto-acto').value = '';
                     document.getElementById('proto-cant-folios').value = '';
                     alert("✅ Instrumento autorizado y foliado correctamente.");
