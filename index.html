@@ -520,8 +520,8 @@
       })
       .catch(() => { document.getElementById('counter-descargas').textContent = '0'; });
 
-    /* === Contador de visitas (countapi.xyz) === */
-    fetch('https://api.countapi.xyz/hit/ferardon.github.io-juris/visits')
+    /* === Contador de visitas (abacus) === */
+    fetch('https://abacus.jasoncameron.dev/hit/ferardon.github.io-juris/visits')
       .then(r => r.json())
       .then(data => {
         document.getElementById('counter-visitas').textContent =
