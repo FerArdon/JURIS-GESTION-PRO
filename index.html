@@ -21,6 +21,15 @@
 
   <!-- Estilos -->
   <link rel="stylesheet" href="assets/css/styles.css" />
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9H7QM0R106"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9H7QM0R106');
+  </script>
 </head>
 <body>
 
@@ -393,7 +402,8 @@
         <a href="https://github.com/FerArdon/JURIS-GESTION-PRO/releases/latest"
            class="btn-primary"
            id="btn-descarga-releases"
-           target="_blank">
+           target="_blank"
+           onclick="gtag('event','download_click',{product:'JURIS-GESTION-PRO'})">
           ⬇ Descargar desde GitHub Releases
         </a>
 
@@ -534,44 +544,6 @@
       if (b) b.href = 'https://wa.me/' + n + '?text=' + msg;
     })();
   </script>
-
-</body>
-</html>
-
-    </div>
-
-    <div class="footer-bottom">
-      <p>© 2026 SEDCAF – Servicios de Consultoría y Asesoría Forestal. Todos los derechos reservados.</p>
-      <p>Desarrollado por <a href="https://ferardon.github.io/sedcaf/" target="_blank">Ing. Fer Ardón</a> · Tegucigalpa, Honduras</p>
-    </div>
-  </footer>
-
-
-<script>
-  // Descargas reales desde GitHub Releases API
-  fetch('https://api.github.com/repos/FerArdon/JURIS-GESTION-PRO/releases')
-    .then(r => r.json())
-    .then(releases => {
-      const total = releases.reduce((sum, rel) =>
-        sum + rel.assets.reduce((s, a) => s + a.download_count, 0), 0);
-      document.getElementById('counter-descargas').textContent =
-        total > 0 ? total.toLocaleString('es-HN') : '0';
-    })
-    .catch(() => {
-      document.getElementById('counter-descargas').textContent = '0';
-    });
-
-  // Contador de visitas gratuito
-  fetch('https://api.countapi.xyz/hit/ferardon.github.io-juris/visits')
-    .then(r => r.json())
-    .then(data => {
-      document.getElementById('counter-visitas').textContent =
-        data.value ? data.value.toLocaleString('es-HN') : '1';
-    })
-    .catch(() => {
-      document.getElementById('counter-visitas').textContent = '—';
-    });
-</script>
 
 </body>
 </html>
