@@ -1516,6 +1516,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
                     <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:20px;">
                         Ingrese el <strong>Código de Restablecimiento</strong> proporcionado por el administrador del sistema.
                     </p>
+                    <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:12px;">ID de este equipo (envíelo a SEDCAF para recibir su código): <strong id="rec-hw" style="font-family:monospace;">...</strong></p>
                     <input type="password" id="rec-pin-key" class="ai-input" style="width:100%; text-align:center; font-family:monospace; margin-bottom:20px;" placeholder="Código de restablecimiento">
                     <div style="display:flex; gap:10px; justify-content:center;">
                         <button class="btn-send" style="background:#38465b;" onclick="document.getElementById('modal-recuperar-pin').style.display='none'">Cancelar</button>
@@ -3355,6 +3356,7 @@ Usa el buscador superior para encontrar rápidamente la plantilla que necesitas 
             document.getElementById('modal-pin').style.display = 'none';
             document.getElementById('modal-recuperar-pin').style.display = 'flex';
             document.getElementById('rec-pin-key').value = '';
+            window.pywebview.api.obtener_hardware_id().then(h => { document.getElementById('rec-hw').textContent = h; });
             document.getElementById('rec-pin-key').focus();
         }
 

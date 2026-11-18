@@ -162,8 +162,8 @@ ACTIVATION_HTML = '''
     </div>
     <div class="hw-val" id="hw">Cargando...</div>
   </div>
-  <input type="text" id="key" placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
-         maxlength="23" oninput="fmt(this)" onkeydown="if(event.key===\'Enter\')activar()">
+  <input type="text" id="key" placeholder="Pegue aquí la clave completa"
+         maxlength="140" oninput="fmt(this)" onkeydown="if(event.key===\'Enter\')activar()">
   <button id="btn" onclick="activar()">Activar Software</button>
   <div class="msg" id="msg"></div>
 </div>
@@ -181,7 +181,7 @@ function copiarHW(){
 function fmt(el){
   let v=el.value.replace(/[^A-Za-z0-9]/g,\'\').toUpperCase();
   let r=\'\';
-  for(let i=0;i<v.length&&i<20;i++){
+  for(let i=0;i<v.length&&i<106;i++){
     if(i>0&&i%5===0)r+=\'-\';
     r+=v[i];
   }
@@ -191,8 +191,8 @@ async function activar(){
   const key=document.getElementById(\'key\').value.trim();
   const msg=document.getElementById(\'msg\');
   const btn=document.getElementById(\'btn\');
-  if(key.replace(/-/g,\'\').length<20){
-    msg.className=\'msg err\';msg.textContent=\'Ingrese los 20 caracteres de la clave.\';
+  if(key.replace(/-/g,\'\').length<106){
+    msg.className=\'msg err\';msg.textContent=\'Pegue la clave completa (106 caracteres).\';
     return;
   }
   btn.disabled=true;msg.className=\'msg\';msg.textContent=\'Verificando...\';
@@ -524,11 +524,17 @@ class JurisAPI:
         except Exception:
             return True  # Fallo seguro: si hay error, no bloquear
 
+    def obtener_hardware_id(self):
+        """ID de este equipo: el cliente lo envía a SEDCAF para recibir su código de reset."""
+        from src.licencia import get_hardware_id
+        return get_hardware_id()
+
     def reset_pin_admin(self, codigo_reset):
-        """Resetea el PIN usando el código maestro del sistema."""
-        CODIGO_MAESTRO = "JURIS2026RESET"
-        if codigo_reset.strip().upper() != CODIGO_MAESTRO:
-            return "Código de restablecimiento incorrecto."
+        """Resetea el PIN con un código firmado por SEDCAF para este equipo y este día.
+        (Antes era un código maestro fijo en el código fuente: cualquiera lo conocía.)"""
+        from src.licencia import verificar_codigo_reset
+        if not verificar_codigo_reset(codigo_reset):
+            return "Código de restablecimiento incorrecto o vencido."
         try:
             conn = _get_db_connection()
             conn.execute("UPDATE configuracion SET pin='' WHERE id=1")

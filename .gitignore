@@ -47,3 +47,12 @@ installer/Output/
 # OS
 .DS_Store
 Thumbs.db
+
+# --- Seguridad: nunca versionar secretos, generadores de licencias ni datos de clientes ---
+.env
+*.key
+*.pem
+*licencias_emitidas*
+*APIKEY*
+*API KEY*
+KEY*PERSONAL*
